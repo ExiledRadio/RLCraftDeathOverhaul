@@ -1,11 +1,17 @@
 package com.exiledradio.rlcraftdeathpenalty;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
 import java.util.Arrays;
@@ -273,10 +279,33 @@ public class ModConfig {
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(RLCraftDeathPenalty.MODID)) {
+            boolean wasKeepingInventory = KEEP_INVENTORY;
+
             // Every setting is read live at death/respawn time, so a reload is enough —
             // nothing here needs a restart to take effect.
             loadConfig();
+
+            // Only worth saying at the moment it is switched on. The startup check
+            // cannot cover this: it runs once, before anyone has touched the GUI.
+            if (KEEP_INVENTORY && !wasKeepingInventory) {
+                String warning = InventoryKeepHandler.buildConflictWarning();
+                if (warning != null) {
+                    RLCraftDeathPenalty.LOGGER.warn(warning);
+                    notifyConflict(warning);
+                }
+            }
         }
+    }
+
+    // Config screens only ever exist client-side, so OnConfigChangedEvent (fired when one
+    // is saved) never fires on a dedicated server - this is safe to call unconditionally
+    // from the common event handler above.
+    @SideOnly(Side.CLIENT)
+    private static void notifyConflict(String warning) {
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if (player == null) return;
+        player.sendMessage(new TextComponentString(
+                TextFormatting.DARK_RED + "[Death Penalty] " + TextFormatting.YELLOW + warning));
     }
 
     public static boolean isDimensionExempt(int dimensionId) {

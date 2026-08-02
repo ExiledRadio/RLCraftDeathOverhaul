@@ -224,23 +224,53 @@ public class InventoryKeepHandler {
 
     // ------------------------------------------------------------------
 
-    /**
-     * Two mods both trying to save an inventory is the single most likely way for this
-     * feature to lose someone's items, so say so loudly at startup rather than leaving
-     * it to be discovered the hard way.
-     */
-    public static void logCompatibilityWarnings() {
-        if (!ModConfig.KEEP_INVENTORY) {
-            return;
-        }
-        for (String modid : new String[]{"corpsecomplex", "tombstone", "corail_tombstone",
-                "gravestone", "griefprevention", "universalgraves"}) {
+    /** Mods that also decide what survives a death. Running two of them is the problem. */
+    private static final String[] CONFLICTING_MODS = {
+            "corpsecomplex", "tombstone", "corail_tombstone", "gravestone",
+            "universalgraves", "everlastingabilities", "deathquotes",
+    };
+
+    /** @return the modid of a loaded death-drops mod, or null if there is none */
+    public static String findConflictingMod() {
+        for (String modid : CONFLICTING_MODS) {
             if (Loader.isModLoaded(modid)) {
-                RLCraftDeathPenalty.LOGGER.warn(
-                        "KEEP_INVENTORY is on and '{}' is also installed. Both mods handle death "
-                                + "drops, and running them together is how items go missing. Turn "
-                                + "one of them off.", modid);
+                return modid;
             }
+        }
+        return null;
+    }
+
+    /**
+     * Two mods both deciding what survives a death is the single most likely way for
+     * this feature to lose or duplicate someone's items, so say so loudly rather than
+     * leaving it to be discovered the hard way.
+     *
+     * <p>Worth being blunt about the symptom as well as the risk: if the other mod is
+     * already keeping the same slots, toggling {@code KEEP_INVENTORY} changes nothing
+     * you can see, and the natural conclusion is that the setting is broken.
+     */
+    public static String buildConflictWarning() {
+        if (!ModConfig.KEEP_INVENTORY) {
+            return null;
+        }
+        String conflict = findConflictingMod();
+        if (conflict == null) {
+            return null;
+        }
+        // Deliberately worded as "check", not "conflict". This only knows the other mod
+        // is installed, not how it is configured — one set to keep nothing is perfectly
+        // fine to run alongside, and crying wolf at those users would train them to
+        // ignore the message that actually matters.
+        return "KEEP_INVENTORY is on and '" + conflict + "' is also installed. Check that it is "
+                + "not set to keep items too. If it is, only one of them should be - two mods "
+                + "saving one inventory risks losing or duplicating items, and whichever runs "
+                + "second appears to do nothing, which makes these settings look broken.";
+    }
+
+    public static void logCompatibilityWarnings() {
+        String warning = buildConflictWarning();
+        if (warning != null) {
+            RLCraftDeathPenalty.LOGGER.warn(warning);
         }
     }
 }
