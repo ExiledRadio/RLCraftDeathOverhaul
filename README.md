@@ -45,6 +45,13 @@ Everything is in **whole hearts** and read live — no restart needed.
 | `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone. |
 | `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
 | `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that don't count — `fall`, `lava`, `cactus`, … |
+| `KEEP_INVENTORY` | `false` | Master switch for keeping items on death. See below. |
+| `KEEP_ARMOR` | `true` | Keep equipped armour. Only when `KEEP_INVENTORY` is on. |
+| `KEEP_HOTBAR` | `true` | Keep hotbar items other than the held one. |
+| `KEEP_MAINHAND` | `true` | Keep the item you were holding. |
+| `KEEP_OFFHAND` | `true` | Keep the offhand item. |
+| `KEEP_MAIN_INVENTORY` | `false` | Keep the 27 non-hotbar slots — your loot. |
+| `KEEP_XP` | `false` | Keep experience instead of dropping it. |
 
 `EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name, **not** the death message.
 If you don't know a modded one, set the log level to debug — every death this mod sees is
@@ -80,14 +87,35 @@ Health's `Starting Health`, change `MIN_HEARTS` to match or the effect is lost.
 
 Aliased to `/dp`.
 
-## Pairing it with item loss
+## Item loss
 
-This mod deliberately does nothing to your inventory. It's designed to sit alongside a
-death-penalty mod that handles items — [Corpse Complex](https://www.curseforge.com/minecraft/mc-mods/corpse-complex)
-is already in RLCraft, and its Inventory Module is off by default. Turning it on and
-keeping equipped gear (armour, hotbar, hands, baubles, toolbelt) while still dropping your
-main inventory gives you the intended shape: **you keep your kit, you drop your loot, and
-the hearts are the part that actually hurts.**
+Out of the box this mod does nothing to your inventory — `KEEP_INVENTORY` is `false`, and
+death drops behave exactly as your pack already has them. There are two ways to change that.
+
+**If your pack already has a death-drops mod, use that.** [Corpse Complex](https://www.curseforge.com/minecraft/mc-mods/corpse-complex)
+ships with RLCraft and its Inventory Module is off by default, which is usually the real
+reason death wipes you. Turning it on gives you per-slot control plus durability costs and
+soulbinding, all of which this mod does not try to reimplement.
+
+**If it doesn't, turn on `KEEP_INVENTORY`** and the mod handles items itself. The defaults
+keep your equipped kit (armour, hotbar, both hands) and still drop your main inventory,
+which is the shape the whole design is built around: **you keep your kit, you drop your
+loot, and the hearts are the part that actually hurts.**
+
+Do not do both. Two mods saving the same inventory is how items go missing — the mod logs
+a warning at startup if it detects another death-drops mod alongside `KEEP_INVENTORY`.
+
+Some deliberate behaviour worth knowing:
+
+- **The vanilla `keepInventory` gamerule wins.** If it's on, this mod leaves your inventory
+  completely alone whatever `KEEP_INVENTORY` says. Vanilla is already keeping everything,
+  and stepping in would destroy the items it wasn't told to save.
+- **Curse of Vanishing is respected.** Cursed items are never saved, even from slots you'd
+  otherwise keep.
+- **Saved items live in NBT, not memory**, so logging out on the death screen or a server
+  restart while you're dead won't lose them.
+- **Turning the option off won't strand anyone.** Items already held for a dead player are
+  still returned on respawn.
 
 ## Building
 

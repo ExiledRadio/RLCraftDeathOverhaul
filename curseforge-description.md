@@ -58,6 +58,10 @@ Optionally, sleeping through a full night wipes your pending deaths (`RESET_COUN
 | `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to the whole server. |
 | `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
 | `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that don't count - `fall`, `lava`, `cactus`, … |
+| `KEEP_INVENTORY` | `false` | Master switch for keeping items on death. See below. |
+| `KEEP_ARMOR` / `KEEP_HOTBAR` / `KEEP_MAINHAND` / `KEEP_OFFHAND` | `true` | Which equipped slots survive. |
+| `KEEP_MAIN_INVENTORY` | `false` | Whether your 27 loot slots survive too. |
+| `KEEP_XP` | `false` | Keep experience instead of dropping it. |
 
 `EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name, **not** the death message in chat. If you don't know a modded one, set your log to debug - every death this mod sees is logged with its damage type.
 
@@ -76,16 +80,26 @@ Aliased to `/dp`.
 
 ---
 
-## Your items are somebody else's job
+## Your items
 
-This mod deliberately does **nothing** to your inventory. That's not an omission - it's so you can pair it with whatever item-loss rules you actually want.
+Out of the box, **nothing changes** - `KEEP_INVENTORY` is off and death drops work exactly as your pack already has them. The heart cost layers on top. There are two ways to change that, and you should pick exactly one.
 
-If you're on RLCraft, you already have **Corpse Complex** installed, and its Inventory Module is **off by default** - which is the real reason death wipes you. Turn it on and it gives you per-slot control. A setup that works well with this mod:
+**If your pack already has a death-drops mod, use it.** On RLCraft you already have **Corpse Complex** installed, and its Inventory Module is **off by default** - which is the real reason death wipes you. Turn it on for per-slot control, durability costs on death, and soulbinding. A setup that works well alongside this mod:
 
 - Keep armour, hotbar, both hands, baubles and toolbelt
 - Drop your main inventory - your loot and materials are the thing at risk
 - Charge 10% durability on everything you kept
 - Leave the Return Scroll enabled so you can go get your drops back
+
+**If it doesn't, turn on `KEEP_INVENTORY`** and this mod does it itself, so you don't need a second mod just to stop losing your gear. The defaults give the same shape: equipped kit survives, main inventory drops.
+
+**Don't run both.** Two mods saving the same inventory is how items go missing. The mod checks at startup and warns in the log if it spots another death-drops mod while `KEEP_INVENTORY` is on.
+
+A few things it does on purpose:
+
+- **The vanilla `keepInventory` gamerule always wins.** With it on, this mod won't touch your inventory no matter what the config says - vanilla is already keeping everything, and interfering would destroy whatever it wasn't told to save.
+- **Curse of Vanishing still works.** Cursed items are never saved.
+- **Held items are stored in your save data, not in memory** - logging out while dead, or a server restart, won't lose them.
 
 You keep your kit, you drop your haul, and the hearts are the part that actually hurts.
 

@@ -22,6 +22,14 @@ If you've changed Scaling Health's `Starting Health`, set `MIN_HEARTS` to match 
 
 Every setting is in whole hearts and read live — nothing here needs a restart.
 
+## Optional inventory keeping
+
+**`KEEP_INVENTORY`** (default `false`) lets the mod keep items on death by itself, so it doesn't need a second mod alongside it in a pack with no gravestone or death-penalty mod. `KEEP_ARMOR`, `KEEP_HOTBAR`, `KEEP_MAINHAND` and `KEEP_OFFHAND` default to on; `KEEP_MAIN_INVENTORY` and `KEEP_XP` default to off — equipped kit survives, loot drops.
+
+Leave it off if you already run Corpse Complex or any gravestone mod, and let that handle drops instead. Two mods saving one inventory is how items go missing; the log warns at startup if it spots this.
+
+The vanilla `keepInventory` gamerule always takes precedence — with it on, this mod won't touch your inventory at all. Curse of Vanishing is respected, and held items are stored in save data rather than memory, so logging out while dead or restarting the server won't lose them.
+
 ## Commands
 
 `/deathpenalty status` shows your max health, the floor, deaths banked and lifetime totals, and is available to everyone. `reset` and `sethearts` require op. Aliased to `/dp`.
