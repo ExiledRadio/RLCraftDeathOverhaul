@@ -39,5 +39,6 @@ public class RLCraftDeathPenalty {
         // Deferred to server start because it reads Scaling Health's config, which is
         // only guaranteed to be fully populated once every mod has finished loading.
         ScalingHealthBridge.logCompatibilityWarnings();
+        InventoryKeepHandler.logCompatibilityWarnings();
     }
 }

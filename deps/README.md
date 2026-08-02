@@ -5,9 +5,16 @@ bundled into the built jar, and not ours to redistribute, so `deps/*.jar` is git
 
 To build this project you need:
 
-| File | Where to get it |
-|---|---|
-| `ScalingHealth-1.12.2-1.3.42.jar` | [Scaling Health on CurseForge](https://www.curseforge.com/minecraft/mc-mods/scaling-health/files) — 1.12.2 build `1.3.42+147` |
+| File | Where to get it | Why |
+|---|---|---|
+| `ScalingHealth-1.12.2-1.3.42.jar` | [Scaling Health on CurseForge](https://www.curseforge.com/minecraft/mc-mods/scaling-health/files) — 1.12.2 build `1.3.42+147` | Hard dependency |
+| `SilentLib-1.12.2-3.0.14.jar` | [Silent Lib on CurseForge](https://www.curseforge.com/minecraft/mc-mods/silent-lib/files) — build `3.0.14+168` | Scaling Health's `Config` extends its `ConfigBaseNew` |
+| `Baubles-1.12-1.5.2-dev.jar` | [Baubles on CurseForge](https://www.curseforge.com/minecraft/mc-mods/baubles/files) — the **dev** jar | Soft dependency, `KEEP_BAUBLES` |
+| `WearableBackpacks-1.12.2-3.2.6.jar` | [Wearable Backpacks on CurseForge](https://www.curseforge.com/minecraft/mc-mods/wearable-backpacks/files) | Soft dependency, `KEEP_WEARABLE_BACKPACK` |
+
+The last two are **soft** — the mod builds and runs without either at runtime. Every call
+into them is behind a `Loader.isModLoaded` check and lives in `compat/`, so their classes
+are never loaded when the mod is absent. They are still required to *compile*.
 
 The CurseForge download is named `ScalingHealth-1.12.2-1.3.42+147.jar`. **Rename it to
 drop the `+147`** before dropping it in here — Gradle's `flatDir` resolver splits

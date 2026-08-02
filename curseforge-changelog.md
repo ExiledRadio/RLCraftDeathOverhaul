@@ -22,13 +22,17 @@ If you've changed Scaling Health's `Starting Health`, set `MIN_HEARTS` to match 
 
 Every setting is in whole hearts and read live — nothing here needs a restart.
 
-## Your items are untouched
+## You keep your gear, out of the box
 
-This mod has no keep-inventory setting and never edits another mod's config. Death drops behave exactly as your pack already has them; the heart cost layers on top.
+RLCraft ships with every keep-item option switched off, so this is on by default — otherwise you'd lose your inventory *and* your hearts, and the mod would be a straight punishment rather than a trade.
 
-**Corpse Complex** ships with RLCraft and already does that job well, but its Inventory Module is **off by default** — which is the real reason death wipes you. The mod page has a copy-pasteable block for `config/corpsecomplex.cfg` that keeps your equipped kit, still drops your main inventory, and charges durability on what survives. That's the setup this mod is tuned around.
+**Kept on death:** armour, hotbar, mainhand, offhand, Baubles (which covers the Tool Belt, since it sits in a Baubles slot), and your Wearable Backpack with its contents.
 
-Prefer to lose nothing? The vanilla `keepInventory` gamerule works fine alongside this — the hearts just become the only penalty.
+**Dropped on death:** your main inventory, the 27 non-hotbar slots. The one default deliberately left off — your loot is what makes a death hurt now, the hearts are what makes it hurt later.
+
+Two settings stop that being free: **`DURABILITY_LOSS_ON_KEPT_ITEMS`** (10%) charges everything you kept, never breaking anything outright, and **`NO_DROP_DESPAWN`** (on) means the pile you dropped waits for you instead of vanishing after five minutes.
+
+Set `KEEP_INVENTORY=false` to hand item handling back to your pack, or flip the individual `KEEP_*` options. If you already run Corpse Complex or a gravestone mod, turn one of the two off — two mods saving one inventory can duplicate or lose items, and the log warns if it spots one. The vanilla `keepInventory` gamerule always takes precedence.
 
 ## Commands
 

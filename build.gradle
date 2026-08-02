@@ -73,6 +73,12 @@ dependencies {
 	// SilentLib itself. It ships as a hard dependency of Scaling Health, so it is always
 	// present at runtime wherever Scaling Health is.
 	compileOnly name: 'SilentLib-1.12.2-3.0.14'
+
+	// Soft dependencies — the mod runs fine without either. Every call into them is
+	// behind a Loader.isModLoaded check and isolated in its own compat class, so their
+	// classes are never loaded when the mod is absent.
+	compileOnly name: 'Baubles-1.12-1.5.2-dev'
+	compileOnly name: 'WearableBackpacks-1.12.2-3.2.6'
 }
 
 task devJar(type: Jar) {

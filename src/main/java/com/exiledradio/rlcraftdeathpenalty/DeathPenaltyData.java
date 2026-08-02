@@ -2,6 +2,7 @@ package com.exiledradio.rlcraftdeathpenalty;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 /**
  * The per-player death ledger, stored in the player's {@code PlayerPersisted} NBT tag.
@@ -81,6 +82,75 @@ public final class DeathPenaltyData {
 
     public static void addTotalHeartsLost(EntityPlayer player, float hearts) {
         root(player).setFloat(KEY_TOTAL_HEARTS_LOST, getTotalHeartsLost(player) + hearts);
+    }
+
+    // --- Items held across the respawn while KEEP_INVENTORY is on ---
+    //
+    // These ride in the same persisted tag as the counters rather than a static map, so
+    // a server restart or a logout on the death screen cannot lose someone's gear.
+
+    private static final String KEY_KEPT_ITEMS = "keptItems";
+    private static final String KEY_KEPT_BAUBLES = "keptBaubles";
+    private static final String KEY_KEPT_BACKPACK = "keptBackpack";
+    private static final String KEY_KEPT_XP = "keptXp";
+
+    private static final int NBT_COMPOUND = 10;
+
+    public static void setKeptItems(EntityPlayer player, NBTTagList items) {
+        root(player).setTag(KEY_KEPT_ITEMS, items);
+    }
+
+    public static NBTTagList getKeptItems(EntityPlayer player) {
+        return root(player).getTagList(KEY_KEPT_ITEMS, NBT_COMPOUND);
+    }
+
+    public static boolean hasKeptItems(EntityPlayer player) {
+        return root(player).hasKey(KEY_KEPT_ITEMS);
+    }
+
+    public static void setKeptBaubles(EntityPlayer player, NBTTagList baubles) {
+        root(player).setTag(KEY_KEPT_BAUBLES, baubles);
+    }
+
+    public static NBTTagList getKeptBaubles(EntityPlayer player) {
+        return root(player).getTagList(KEY_KEPT_BAUBLES, NBT_COMPOUND);
+    }
+
+    public static boolean hasKeptBaubles(EntityPlayer player) {
+        return root(player).hasKey(KEY_KEPT_BAUBLES);
+    }
+
+    public static void setKeptBackpack(EntityPlayer player, NBTTagCompound backpack) {
+        root(player).setTag(KEY_KEPT_BACKPACK, backpack);
+    }
+
+    public static NBTTagCompound getKeptBackpack(EntityPlayer player) {
+        return root(player).getCompoundTag(KEY_KEPT_BACKPACK);
+    }
+
+    public static boolean hasKeptBackpack(EntityPlayer player) {
+        return root(player).hasKey(KEY_KEPT_BACKPACK);
+    }
+
+    public static void setKeptXp(EntityPlayer player, int totalExperience) {
+        root(player).setInteger(KEY_KEPT_XP, totalExperience);
+    }
+
+    public static int getKeptXp(EntityPlayer player) {
+        return root(player).getInteger(KEY_KEPT_XP);
+    }
+
+    public static boolean hasKeptXp(EntityPlayer player) {
+        return root(player).hasKey(KEY_KEPT_XP);
+    }
+
+    /** Wipes every stash key at once, once the contents have been handed back. */
+    public static void clearKept(EntityPlayer player) {
+        NBTTagCompound ours = root(player);
+        ours.removeTag(KEY_KEPT_ITEMS);
+        ours.removeTag(KEY_KEPT_BAUBLES);
+        ours.removeTag(KEY_KEPT_BACKPACK);
+        ours.removeTag(KEY_KEPT_XP);
     }
 
     /** Clears the ledger. Used by {@code /deathpenalty reset}. */

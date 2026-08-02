@@ -36,6 +36,18 @@ public class ModConfig {
     public static int[] EXEMPT_DIMENSIONS = new int[0];
     public static String[] EXEMPT_DAMAGE_TYPES = new String[0];
 
+    public static boolean KEEP_INVENTORY = true;
+    public static boolean KEEP_ARMOR = true;
+    public static boolean KEEP_HOTBAR = true;
+    public static boolean KEEP_MAINHAND = true;
+    public static boolean KEEP_OFFHAND = true;
+    public static boolean KEEP_MAIN_INVENTORY = false;
+    public static boolean KEEP_BAUBLES = true;
+    public static boolean KEEP_WEARABLE_BACKPACK = true;
+    public static boolean KEEP_XP = false;
+    public static float DURABILITY_LOSS_ON_KEPT_ITEMS = 0.10F;
+    public static boolean NO_DROP_DESPAWN = true;
+
     /** Lower-cased {@link #EXEMPT_DAMAGE_TYPES}, rebuilt on every load so lookups stay cheap. */
     private static Set<String> exemptDamageTypes = new HashSet<String>();
 
@@ -175,6 +187,115 @@ public class ModConfig {
                         + "Modded sources use their own names - if you are unsure of one, set the log to\n"
                         + "debug and this mod prints the damage type of every death it sees.\n"
                         + "Empty (default) exempts nothing."
+        );
+
+        KEEP_INVENTORY = config.getBoolean(
+                "KEEP_INVENTORY",
+                Configuration.CATEGORY_GENERAL,
+                true,
+                "Master switch for keeping items on death. ON by default, so the mod works the\n"
+                        + "way it is meant to straight out of the box with no setup.\n"
+                        + "\n"
+                        + "The point of this mod is that hearts are the price of dying, not your\n"
+                        + "inventory. RLCraft ships with every keep-item setting turned off, so without\n"
+                        + "this you would still lose everything and the heart cost would just be an\n"
+                        + "extra punishment on top.\n"
+                        + "\n"
+                        + "Set to false to hand item handling back to your pack - useful if you would\n"
+                        + "rather configure Corpse Complex, a gravestone mod, or nothing at all.\n"
+                        + "\n"
+                        + "IMPORTANT: if another mod is also set to keep items, turn one of them off.\n"
+                        + "Two mods saving the same inventory can duplicate or lose items.\n"
+                        + "\n"
+                        + "The vanilla keepInventory gamerule always wins. With it on, vanilla keeps\n"
+                        + "everything already and this mod leaves your inventory entirely alone."
+        );
+
+        KEEP_ARMOR = config.getBoolean(
+                "KEEP_ARMOR", Configuration.CATEGORY_GENERAL, true,
+                "Keep equipped armour on death. Only applies when KEEP_INVENTORY is true."
+        );
+
+        KEEP_HOTBAR = config.getBoolean(
+                "KEEP_HOTBAR", Configuration.CATEGORY_GENERAL, true,
+                "Keep hotbar items on death, not counting whatever you were holding -\n"
+                        + "that one is KEEP_MAINHAND. Only applies when KEEP_INVENTORY is true."
+        );
+
+        KEEP_MAINHAND = config.getBoolean(
+                "KEEP_MAINHAND", Configuration.CATEGORY_GENERAL, true,
+                "Keep the item you were holding when you died.\n"
+                        + "Only applies when KEEP_INVENTORY is true."
+        );
+
+        KEEP_OFFHAND = config.getBoolean(
+                "KEEP_OFFHAND", Configuration.CATEGORY_GENERAL, true,
+                "Keep the offhand item on death. Only applies when KEEP_INVENTORY is true."
+        );
+
+        KEEP_MAIN_INVENTORY = config.getBoolean(
+                "KEEP_MAIN_INVENTORY", Configuration.CATEGORY_GENERAL, false,
+                "Keep the main inventory - the 27 slots that are not the hotbar - on death.\n"
+                        + "OFF by default, and the one thing you are meant to lose: dropping your loot\n"
+                        + "and materials is what makes a death sting in the moment, while the hearts\n"
+                        + "are the lasting cost. Your gear survives, your haul does not.\n"
+                        + "Turning this on as well means you keep literally everything, and the hearts\n"
+                        + "become the only penalty at all.\n"
+                        + "Only applies when KEEP_INVENTORY is true."
+        );
+
+        KEEP_BAUBLES = config.getBoolean(
+                "KEEP_BAUBLES", Configuration.CATEGORY_GENERAL, true,
+                "Keep equipped Baubles - rings, amulets, belts and the rest - on death.\n"
+                        + "Ignored when Baubles is not installed.\n"
+                        + "This also covers the Tool Belt, which sits in a Baubles slot whenever\n"
+                        + "Baubles is present, and any other mod that equips through Baubles.\n"
+                        + "Only applies when KEEP_INVENTORY is true."
+        );
+
+        KEEP_WEARABLE_BACKPACK = config.getBoolean(
+                "KEEP_WEARABLE_BACKPACK", Configuration.CATEGORY_GENERAL, true,
+                "Keep your equipped Wearable Backpack, and everything inside it, on death.\n"
+                        + "Ignored when Wearable Backpacks is not installed.\n"
+                        + "When that mod is configured to wear backpacks in the chest armour slot,\n"
+                        + "KEEP_ARMOR covers it instead and this setting does nothing.\n"
+                        + "Only applies when KEEP_INVENTORY is true."
+        );
+
+        KEEP_XP = config.getBoolean(
+                "KEEP_XP", Configuration.CATEGORY_GENERAL, false,
+                "Keep your experience on death instead of dropping it.\n"
+                        + "OFF by default: losing levels is a normal part of dying, and RLCraft's own\n"
+                        + "Corpse Complex already lets you recover some of it.\n"
+                        + "Only applies when KEEP_INVENTORY is true."
+        );
+
+        DURABILITY_LOSS_ON_KEPT_ITEMS = config.getFloat(
+                "DURABILITY_LOSS_ON_KEPT_ITEMS",
+                Configuration.CATEGORY_GENERAL,
+                0.10F,
+                0.0F,
+                1.0F,
+                "Fraction of maximum durability knocked off every damageable item you keep.\n"
+                        + "0.10 (default) is 10%. 0 disables it.\n"
+                        + "This is what stops keeping your gear from being free - a death costs you\n"
+                        + "hearts in the long run and repair materials right now.\n"
+                        + "Items are never destroyed by this: anything that would break is left at one\n"
+                        + "point of durability instead.\n"
+                        + "Only applies when KEEP_INVENTORY is true."
+        );
+
+        NO_DROP_DESPAWN = config.getBoolean(
+                "NO_DROP_DESPAWN",
+                Configuration.CATEGORY_GENERAL,
+                true,
+                "Stop items dropped on death from ever despawning. ON by default.\n"
+                        + "Vanilla deletes dropped items after five minutes, which in a pack this large\n"
+                        + "is rarely long enough to fight your way back. With this on, your death pile\n"
+                        + "waits for you indefinitely.\n"
+                        + "Applies to everything you dropped whether or not KEEP_INVENTORY is on.\n"
+                        + "Items destroyed by lava or cactus are still gone - this only stops the\n"
+                        + "despawn timer, it does not make drops indestructible."
         );
 
         // Clamp defensively. Forge's own range checking covers the config GUI, but a
