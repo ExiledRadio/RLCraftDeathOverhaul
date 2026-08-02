@@ -1,22 +1,24 @@
 # RLCraft Death Overhaul
 
-Changes what dying costs you. Instead of losing your whole inventory, you keep your gear and pay in hearts off your maximum health.
+**Dying costs you hearts, not your whole inventory.**
+
+You keep your gear. You drop your loot, and it waits on the ground for you instead of despawning. Your maximum health drops by a heart, down to a floor you can never fall through.
 
 Works out of the box. No config editing, no second mod to set up.
 
 ---
 
-## What it does
+## What happens when you die
 
-**Keeps your equipped gear.** Armour, hotbar, mainhand, offhand, Baubles, and your Wearable Backpack with its contents. Your Tool Belt too, since it sits in a Baubles slot.
+**You keep your equipped gear.** Armour, hotbar, mainhand, offhand, Baubles, and your Wearable Backpack with everything in it. Your Tool Belt too, since it sits in a Baubles slot.
 
-**Drops your main inventory.** The 27 non-hotbar slots. Your loot and materials are still at risk.
+**You drop your main inventory.** The 27 non-hotbar slots. Your loot and materials are still on the line, which is what gives you a reason to go back.
 
-**Your dropped items never despawn.** Vanilla deletes them after 5 minutes. In a pack this size that is rarely enough time to fight your way back, and it is one of the most common ways to lose a run's worth of loot. Now the pile waits for you indefinitely. RLCraft already gives you Corpse Complex's Return Scroll to get there.
+**Your dropped items never despawn.** Vanilla deletes them after 5 minutes. In a pack this size that is rarely enough time to fight your way back to a corpse run, and it is one of the most common ways to lose hours of progress. Now the pile waits indefinitely. RLCraft already gives you Corpse Complex's Return Scroll to get there.
 
-**Charges 10% durability** on every damageable item you kept, so surviving with your gear still costs repair materials. It never breaks anything - an item that would be destroyed stops at 1 durability.
+**Everything you kept takes 10% durability.** Walking away with your gear still costs repair materials. It can never break an item - anything that would be destroyed stops at 1 durability instead.
 
-**Takes a heart off your max health.** Permanently, down to a floor. Hearts come back only through Scaling Health heart containers.
+**You lose a heart of maximum health.** Permanently, down to a floor. Hearts come back only through Scaling Health heart containers.
 
 ![Dying at the floor costs nothing](https://media.forgecdn.net/attachments/1836/873/deathmessage-png.png)
 
@@ -24,7 +26,7 @@ Works out of the box. No config editing, no second mod to set up.
 
 ## Why not just use the keepInventory gamerule?
 
-Because it is all or nothing. `keepInventory` keeps *everything* - gear, loot, XP - so death stops costing anything at all, and people end up using it as fast travel. That is usually the complaint that leads them to turn it back off and go back to losing entire runs.
+Because it is all or nothing. `keepInventory` keeps *everything* - gear, loot, XP - so death stops costing anything at all and turns into fast travel. That is usually what makes people switch it back off and go back to losing entire runs.
 
 This mod is the middle setting the gamerule cannot express:
 
@@ -32,13 +34,13 @@ This mod is the middle setting the gamerule cannot express:
 |---|---|---|
 | Equipped gear | Kept | Kept |
 | Main inventory | Kept | **Dropped** |
-| Items on the ground | None | **Never despawn** |
+| Items left on the ground | None | **Never despawn** |
 | Durability cost | None | 10% on kept items |
-| Max health | Unchanged | **One heart, down to a floor** |
+| Maximum health | Unchanged | **A heart, down to a floor** |
 
-You keep enough to survive the walk back, and you lose enough to make the walk worth taking.
+You keep enough to survive the trip back, and lose enough to make the trip worth taking.
 
-If you genuinely do want the gamerule, turn it on — this mod detects it and leaves your inventory alone rather than fighting it. The heart cost still applies.
+If you do want the gamerule, turn it on - this mod detects it and leaves your inventory alone rather than fighting it. The heart cost still applies.
 
 ---
 
@@ -46,10 +48,10 @@ If you genuinely do want the gamerule, turn it on — this mod detects it and le
 
 `MIN_HEARTS` defaults to **10**, the same as Scaling Health's starting health.
 
-So the hearts you start with can never be taken, and only hearts you added with heart containers are at risk. Two consequences:
+So the hearts you start with can never be taken, and only hearts you added with heart containers are ever at risk. Two things follow:
 
-- Dying early costs nothing, so new players are not dug into a hole.
-- Every heart container becomes a decision, because using one puts it permanently at risk.
+- **Dying early costs you nothing.** New players are never dug into a hole they cannot climb out of.
+- **Every heart container becomes a decision.** Using one puts it permanently at risk, so the question changes from "can I make another heart?" to "do I trust myself with what is ahead?"
 
 If you change Scaling Health's `Starting Health`, change `MIN_HEARTS` to match.
 
@@ -57,15 +59,15 @@ If you change Scaling Health's `Starting Health`, change `MIN_HEARTS` to match.
 
 ## Grace period
 
-`DEATHS_PER_PENALTY` sets how many deaths it takes to be charged. Default `1`, so every death costs. Set it to `3` and you get two free deaths before the third takes a heart.
+`DEATHS_PER_PENALTY` sets how many deaths it takes to be charged. Default `1`, so every death costs a heart. Set it to `3` and you get two free deaths before the third one bites.
 
-Scaling Health already has flat per-death health loss and a minimum-health floor. The grace period is the part it does not have.
+Scaling Health already has flat per-death health loss and a minimum-health floor. The grace period is the part it does not have, and the reason this mod exists rather than being a config change.
 
 ---
 
 ## Config
 
-`config/rlcraftdeathoverhaul.cfg`, or in-game via **Mods → RLCraft Death Overhaul → Config**. Health values are in whole hearts, and every setting is read live - no restart needed.
+`config/rlcraftdeathoverhaul.cfg`, or in-game via **Mods → RLCraft Death Overhaul → Config**. Health values are in whole hearts, and every setting is read live - nothing needs a restart.
 
 ![In-game config screen](https://media.forgecdn.net/attachments/1836/874/config-png.png)
 
@@ -82,16 +84,16 @@ Scaling Health already has flat per-death health loss and a minimum-health floor
 | `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone. |
 | `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
 | `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that do not count. |
-| `ENABLE_ITEM_KEEPING` | `true` | Master switch for keeping items. |
+| `ENABLE_ITEM_KEEPING` | `true` | Master on/off for item handling. Does **not** mean "keep everything". |
 | `KEEP_ARMOR` / `KEEP_HOTBAR` / `KEEP_MAINHAND` / `KEEP_OFFHAND` | `true` | Equipped slots. |
 | `KEEP_BAUBLES` | `true` | Baubles, and the Tool Belt with them. |
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents. |
-| `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots. |
+| `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots. This is the one you drop. |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it. |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
 | `NO_DROP_DESPAWN` | `true` | Dropped items never despawn. |
 
-`EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name (`fall`, `lava`, `cactus`), not the chat death message. Set your log level to debug and the mod prints the damage type of every death it sees.
+`EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name (`fall`, `lava`, `cactus`), not the death message in chat. Set your log level to debug and the mod prints the damage type of every death it sees.
 
 ---
 
@@ -108,31 +110,37 @@ Aliased to `/dov` and `/dp`.
 
 ---
 
-## Compatibility
+## Requirements
 
-**If another mod already keeps items on death** - Corpse Complex, a gravestone mod - turn one of the two off. Two mods saving the same inventory can duplicate or lose items. This mod warns in the log if it detects one. Out of the box there is no clash: Corpse Complex ships with RLCraft but has its Inventory Module disabled.
+- **Minecraft 1.12.2**, Forge **14.23.5.2847** or newer
+- **[Scaling Health](https://www.curseforge.com/minecraft/mc-mods/scaling-health)** - required. Forge will refuse to load this mod without it rather than misbehave.
 
-To hand item handling back to your pack entirely, set `ENABLE_ITEM_KEEPING=false`.
+Baubles and Wearable Backpacks are optional. Their settings are ignored when those mods are not installed.
 
-**The vanilla `keepInventory` gamerule takes precedence.** With it on, this mod does not touch your inventory at all.
+**Safe to add to an existing world.** No world generation, no new items or blocks - it only changes what happens when you die. Removing it later is safe too, though hearts already lost stay lost, since Scaling Health owns your maximum health and keeps it.
+
+**Works on servers, and only needs installing on the server.** Every decision is made server-side, so players do not need it in their own mods folder to join. `BROADCAST_PENALTY_TO_SERVER` makes penalties public if you want them to be.
+
+Built for RLCraft and RLCraft Dregora, but nothing in it is pack-specific - it works on any 1.12.2 pack with Scaling Health.
 
 ---
 
-## Requirements
+## Compatibility
 
-- Minecraft 1.12.2, Forge 14.23.5.2847+
-- **[Scaling Health](https://www.curseforge.com/minecraft/mc-mods/scaling-health)** - required. Forge will not load this mod without it.
+**If another mod already keeps items on death** - Corpse Complex, a gravestone mod - turn one of the two off. Two mods saving the same inventory can duplicate or lose items. This mod checks at startup and warns in the log if it spots one. Out of the box there is no clash: Corpse Complex ships with RLCraft with its Inventory Module disabled.
 
-Baubles and Wearable Backpacks are optional. Their settings are ignored when those mods are absent.
+To hand item handling back to your pack entirely, set `ENABLE_ITEM_KEEPING=false`. The heart cost still applies.
 
-Built for RLCraft and RLCraft Dregora, but nothing in it is pack-specific - it works on any 1.12.2 pack with Scaling Health.
+**The vanilla `keepInventory` gamerule always takes precedence.** With it on, this mod does not touch your inventory at all.
+
+**Scaling Health's own `Health Lost On Death`** can be left however you like. This mod takes over health-on-death while it is installed, so the two can never both charge you for the same death.
 
 ---
 
 ## Links
 
 - **Discord:** [discord.gg/kxQvMDJBTN](https://discord.gg/kxQvMDJBTN)
-- **Issues:** [GitHub issue tracker](https://github.com/ExiledRadio/RLCraftDeathOverhaul/issues)
-- **Source:** [github.com/ExiledRadio/RLCraftDeathOverhaul](https://github.com/ExiledRadio/RLCraftDeathOverhaul) - MIT
+- **Bug reports:** [GitHub issue tracker](https://github.com/ExiledRadio/RLCraftDeathOverhaul/issues)
+- **Source:** [github.com/ExiledRadio/RLCraftDeathOverhaul](https://github.com/ExiledRadio/RLCraftDeathOverhaul) - MIT licensed, fork it or bundle it in your modpack
 
-*Unofficial addon. Not affiliated with the RLCraft or RLCraft Dregora teams, or with the author of Scaling Health.*
+*Unofficial addon. Not affiliated with or endorsed by the RLCraft or RLCraft Dregora teams, or by the author of Scaling Health.*

@@ -16,7 +16,12 @@ import org.apache.logging.log4j.Logger;
         // Health's player data, so there is nothing to do without it — and declaring
         // it here means Forge blocks loading rather than letting us hit a
         // NoClassDefFoundError on the first death.
-        dependencies = "required-after:scalinghealth"
+        dependencies = "required-after:scalinghealth",
+        // Every decision this mod makes happens on the server: death, respawn, the
+        // ledger, the commands. The client half is a config screen and nothing else,
+        // and no custom packets are sent. Without this, Forge's mod-list check would
+        // turn away players whose client does not happen to have the same version.
+        acceptableRemoteVersions = "*"
 )
 public class RLCraftDeathOverhaul {
 
