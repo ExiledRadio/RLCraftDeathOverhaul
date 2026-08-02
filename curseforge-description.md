@@ -108,8 +108,8 @@ Built for **RLCraft** and **RLCraft Dregora**, but there's nothing pack-specific
 
 Feedback is welcome, especially on whether the defaults feel right - the balance between the floor, the cost and the grace period is the whole design, and it's the thing most worth arguing about.
 
+- **Discord:** **[discord.gg/kxQvMDJBTN](https://discord.gg/kxQvMDJBTN)** - best place to reach me, or find me directly as `exiledradio`
 - **Bug reports:** the [GitHub issue tracker](https://github.com/ExiledRadio/RLCraftDeathPenalty/issues)
-- **Discord:** `exiledradio`
 - Or leave a comment on this page
 
 ---

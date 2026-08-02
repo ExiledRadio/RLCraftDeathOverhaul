@@ -99,6 +99,14 @@ Needs `deps/ScalingHealth-1.12.2-1.3.42.jar` and `deps/SilentLib-1.12.2-3.0.14.j
 see [deps/README.md](deps/README.md). Do not raise `forge_version` past `14.23.5.2847`;
 see the note in [gradle.properties](gradle.properties).
 
+## Feedback
+
+Especially welcome on whether the defaults feel right — the balance between the floor,
+the cost and the grace period is the whole design.
+
+- **Discord:** [discord.gg/kxQvMDJBTN](https://discord.gg/kxQvMDJBTN)
+- **Bug reports:** the [issue tracker](https://github.com/ExiledRadio/RLCraftDeathPenalty/issues)
+
 ## Not affiliated
 
 Unofficial addon. Not affiliated with the RLCraft team, Dregora, or Scaling Health.
