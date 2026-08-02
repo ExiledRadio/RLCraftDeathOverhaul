@@ -1,0 +1,1 @@
+Dying costs you hearts, not your inventory. Set how many hearts a death takes, how many deaths it takes to lose one, and a floor you can never fall below - so only the hearts you earned are ever at risk.
