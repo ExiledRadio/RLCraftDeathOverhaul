@@ -45,13 +45,6 @@ Everything is in **whole hearts** and read live — no restart needed.
 | `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone. |
 | `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
 | `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that don't count — `fall`, `lava`, `cactus`, … |
-| `KEEP_INVENTORY` | `false` | Master switch for keeping items on death. See below. |
-| `KEEP_ARMOR` | `true` | Keep equipped armour. Only when `KEEP_INVENTORY` is on. |
-| `KEEP_HOTBAR` | `true` | Keep hotbar items other than the held one. |
-| `KEEP_MAINHAND` | `true` | Keep the item you were holding. |
-| `KEEP_OFFHAND` | `true` | Keep the offhand item. |
-| `KEEP_MAIN_INVENTORY` | `false` | Keep the 27 non-hotbar slots — your loot. |
-| `KEEP_XP` | `false` | Keep experience instead of dropping it. |
 
 `EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name, **not** the death message.
 If you don't know a modded one, set the log level to debug — every death this mod sees is
@@ -87,35 +80,48 @@ Health's `Starting Health`, change `MIN_HEARTS` to match or the effect is lost.
 
 Aliased to `/dp`.
 
-## Item loss
+## Keeping your items — set this up yourself
 
-Out of the box this mod does nothing to your inventory — `KEEP_INVENTORY` is `false`, and
-death drops behave exactly as your pack already has them. There are two ways to change that.
+**This mod never touches your inventory.** It has no keep-inventory setting, and it does
+not edit any other mod's config. Install it and your death drops behave exactly as they
+did before; the heart cost simply layers on top.
 
-**If your pack already has a death-drops mod, use that.** [Corpse Complex](https://www.curseforge.com/minecraft/mc-mods/corpse-complex)
-ships with RLCraft and its Inventory Module is off by default, which is usually the real
-reason death wipes you. Turning it on gives you per-slot control plus durability costs and
-soulbinding, all of which this mod does not try to reimplement.
+That's deliberate. [Corpse Complex](https://www.curseforge.com/minecraft/mc-mods/corpse-complex)
+already ships with RLCraft and does this job properly — per-slot control, durability costs,
+random drop chances, soulbinding, Baubles and toolbelt support. Reimplementing a worse
+version of it would only give you two mods fighting over one inventory, which is how items
+go missing.
 
-**If it doesn't, turn on `KEEP_INVENTORY`** and the mod handles items itself. The defaults
-keep your equipped kit (armour, hotbar, both hands) and still drop your main inventory,
-which is the shape the whole design is built around: **you keep your kit, you drop your
-loot, and the hearts are the part that actually hurts.**
+**Its Inventory Module is off by default, and that is the actual reason death wipes you.**
+Open `config/corpsecomplex.cfg`, find the `inventory` block, and set:
 
-Do not do both. Two mods saving the same inventory is how items go missing — the mod logs
-a warning at startup if it detects another death-drops mod alongside `KEEP_INVENTORY`.
+```
+B:"Enable Inventory Module"=true
+B:"Keep Armor"=true
+B:"Keep Hotbar"=true
+B:"Keep Mainhand"=true
+B:"Keep Offhand"=true
+B:"Keep Main Inventory"=false
+B:"Keep Baubles"=true
+B:"Keep Toolbelt"=true
+B:"Keep Wearable Backpack"=true
+D:"Durability Loss on Kept Items"=0.1
+B:"Limit Durability Loss"=true
+I:"Drop Despawn Timer"=900
+```
 
-Some deliberate behaviour worth knowing:
+That gives the shape this mod is designed around: **you keep your kit, you drop your loot,
+and the hearts are the part that actually hurts.** The 10% durability charge makes each
+death sting immediately, `Limit Durability Loss` stops it ever destroying gear outright,
+and the 15-minute despawn timer gives you a real chance to run back — Corpse Complex's
+Return Scroll is already enabled in RLCraft.
 
-- **The vanilla `keepInventory` gamerule wins.** If it's on, this mod leaves your inventory
-  completely alone whatever `KEEP_INVENTORY` says. Vanilla is already keeping everything,
-  and stepping in would destroy the items it wasn't told to save.
-- **Curse of Vanishing is respected.** Cursed items are never saved, even from slots you'd
-  otherwise keep.
-- **Saved items live in NBT, not memory**, so logging out on the death screen or a server
-  restart while you're dead won't lose them.
-- **Turning the option off won't strand anyone.** Items already held for a dead player are
-  still returned on respawn.
+Restart the game after editing. To undo any of it, set the same lines back to `false`, or
+set `Enable Inventory Module` to `false` to switch the whole thing off at once.
+
+**Prefer to lose nothing at all?** Turn on the vanilla `keepInventory` gamerule and skip
+Corpse Complex entirely — this mod works fine that way, and the hearts become the only
+penalty. That's a legitimate setup, just a gentler one than the mod is tuned for.
 
 ## Building
 

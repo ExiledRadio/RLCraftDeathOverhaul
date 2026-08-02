@@ -2,7 +2,6 @@ package com.exiledradio.rlcraftdeathpenalty;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 /**
  * The per-player death ledger, stored in the player's {@code PlayerPersisted} NBT tag.
@@ -82,46 +81,6 @@ public final class DeathPenaltyData {
 
     public static void addTotalHeartsLost(EntityPlayer player, float hearts) {
         root(player).setFloat(KEY_TOTAL_HEARTS_LOST, getTotalHeartsLost(player) + hearts);
-    }
-
-    // --- Items and XP held across the respawn when KEEP_INVENTORY is on ---
-    //
-    // These ride in the same persisted tag as the counters rather than a static map,
-    // so a server restart or a logout while on the death screen cannot lose them.
-
-    private static final String KEY_KEPT_ITEMS = "keptItems";
-    private static final String KEY_KEPT_XP = "keptXp";
-
-    public static void setKeptItems(EntityPlayer player, NBTTagList items) {
-        root(player).setTag(KEY_KEPT_ITEMS, items);
-    }
-
-    public static NBTTagList getKeptItems(EntityPlayer player) {
-        return root(player).getTagList(KEY_KEPT_ITEMS, 10); // 10 = NBTTagCompound
-    }
-
-    public static boolean hasKeptItems(EntityPlayer player) {
-        return root(player).hasKey(KEY_KEPT_ITEMS);
-    }
-
-    public static void clearKeptItems(EntityPlayer player) {
-        root(player).removeTag(KEY_KEPT_ITEMS);
-    }
-
-    public static void setKeptXp(EntityPlayer player, int totalExperience) {
-        root(player).setInteger(KEY_KEPT_XP, totalExperience);
-    }
-
-    public static int getKeptXp(EntityPlayer player) {
-        return root(player).getInteger(KEY_KEPT_XP);
-    }
-
-    public static boolean hasKeptXp(EntityPlayer player) {
-        return root(player).hasKey(KEY_KEPT_XP);
-    }
-
-    public static void clearKeptXp(EntityPlayer player) {
-        root(player).removeTag(KEY_KEPT_XP);
     }
 
     /** Clears the ledger. Used by {@code /deathpenalty reset}. */

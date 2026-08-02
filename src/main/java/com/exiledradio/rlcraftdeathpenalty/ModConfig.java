@@ -1,17 +1,11 @@
 package com.exiledradio.rlcraftdeathpenalty;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
 import java.util.Arrays;
@@ -41,14 +35,6 @@ public class ModConfig {
     public static boolean BROADCAST_PENALTY_TO_SERVER = false;
     public static int[] EXEMPT_DIMENSIONS = new int[0];
     public static String[] EXEMPT_DAMAGE_TYPES = new String[0];
-
-    public static boolean KEEP_INVENTORY = false;
-    public static boolean KEEP_ARMOR = true;
-    public static boolean KEEP_HOTBAR = true;
-    public static boolean KEEP_MAINHAND = true;
-    public static boolean KEEP_OFFHAND = true;
-    public static boolean KEEP_MAIN_INVENTORY = false;
-    public static boolean KEEP_XP = false;
 
     /** Lower-cased {@link #EXEMPT_DAMAGE_TYPES}, rebuilt on every load so lookups stay cheap. */
     private static Set<String> exemptDamageTypes = new HashSet<String>();
@@ -191,63 +177,6 @@ public class ModConfig {
                         + "Empty (default) exempts nothing."
         );
 
-        KEEP_INVENTORY = config.getBoolean(
-                "KEEP_INVENTORY",
-                Configuration.CATEGORY_GENERAL,
-                false,
-                "Master switch for this mod keeping items on death. Off by default.\n"
-                        + "\n"
-                        + "Leave this OFF if you already run Corpse Complex, Corail Tombstone, a\n"
-                        + "gravestone mod, or anything else that handles death drops - two mods both\n"
-                        + "trying to save your inventory is how items go missing. This exists so the\n"
-                        + "mod can stand on its own in a pack that has none of those.\n"
-                        + "\n"
-                        + "This is NOT the vanilla keepInventory gamerule and is not meant to replace\n"
-                        + "it. If that gamerule is on, vanilla already keeps everything and this mod\n"
-                        + "leaves your inventory completely alone regardless of what is set here.\n"
-                        + "\n"
-                        + "The intended setup is to keep your equipped kit and still drop your haul -\n"
-                        + "the defaults below do exactly that. The hearts remain the real penalty."
-        );
-
-        KEEP_ARMOR = config.getBoolean(
-                "KEEP_ARMOR", Configuration.CATEGORY_GENERAL, true,
-                "Keep equipped armour on death. Only applies when KEEP_INVENTORY is true."
-        );
-
-        KEEP_HOTBAR = config.getBoolean(
-                "KEEP_HOTBAR", Configuration.CATEGORY_GENERAL, true,
-                "Keep hotbar items on death, not counting whatever you were holding -\n"
-                        + "that one is KEEP_MAINHAND. Only applies when KEEP_INVENTORY is true."
-        );
-
-        KEEP_MAINHAND = config.getBoolean(
-                "KEEP_MAINHAND", Configuration.CATEGORY_GENERAL, true,
-                "Keep the item you were holding when you died.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
-        );
-
-        KEEP_OFFHAND = config.getBoolean(
-                "KEEP_OFFHAND", Configuration.CATEGORY_GENERAL, true,
-                "Keep the offhand item on death. Only applies when KEEP_INVENTORY is true."
-        );
-
-        KEEP_MAIN_INVENTORY = config.getBoolean(
-                "KEEP_MAIN_INVENTORY", Configuration.CATEGORY_GENERAL, false,
-                "Keep the main inventory - the 27 slots that are not the hotbar - on death.\n"
-                        + "Off by default on purpose: dropping your loot and materials is what keeps\n"
-                        + "a death costly in the moment, while the hearts are the lasting cost.\n"
-                        + "Turning this on together with the other options above is effectively the\n"
-                        + "keepInventory gamerule, with the heart penalty layered over it.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
-        );
-
-        KEEP_XP = config.getBoolean(
-                "KEEP_XP", Configuration.CATEGORY_GENERAL, false,
-                "Keep your experience on death instead of dropping it.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
-        );
-
         // Clamp defensively. Forge's own range checking covers the config GUI, but a
         // hand-edited .cfg can still contain anything at all.
         if (HEARTS_LOST_PER_PENALTY < 0.0F) HEARTS_LOST_PER_PENALTY = 0.0F;
@@ -279,33 +208,10 @@ public class ModConfig {
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(RLCraftDeathPenalty.MODID)) {
-            boolean wasKeepingInventory = KEEP_INVENTORY;
-
             // Every setting is read live at death/respawn time, so a reload is enough —
             // nothing here needs a restart to take effect.
             loadConfig();
-
-            // Only worth saying at the moment it is switched on. The startup check
-            // cannot cover this: it runs once, before anyone has touched the GUI.
-            if (KEEP_INVENTORY && !wasKeepingInventory) {
-                String warning = InventoryKeepHandler.buildConflictWarning();
-                if (warning != null) {
-                    RLCraftDeathPenalty.LOGGER.warn(warning);
-                    notifyConflict(warning);
-                }
-            }
         }
-    }
-
-    // Config screens only ever exist client-side, so OnConfigChangedEvent (fired when one
-    // is saved) never fires on a dedicated server - this is safe to call unconditionally
-    // from the common event handler above.
-    @SideOnly(Side.CLIENT)
-    private static void notifyConflict(String warning) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (player == null) return;
-        player.sendMessage(new TextComponentString(
-                TextFormatting.DARK_RED + "[Death Penalty] " + TextFormatting.YELLOW + warning));
     }
 
     public static boolean isDimensionExempt(int dimensionId) {
