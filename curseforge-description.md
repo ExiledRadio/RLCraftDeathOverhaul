@@ -21,7 +21,7 @@ Two things fall out of that, and both are the point:
 
 The penalty only grows teeth once you've chosen to give it teeth. Nobody gets punished for being new; everybody gets to gamble once they're not.
 
-<!-- IMAGE: upload images/DeathMessage.png to CurseForge, then paste its media.forgecdn.net URL here -->
+![Dying at the floor costs nothing](https://media.forgecdn.net/attachments/1836/873/deathmessage-png.png)
 
 *Dying while you're still at the floor tells you so, and costs you nothing.*
 
@@ -43,7 +43,7 @@ Optionally, sleeping through a full night wipes your pending deaths (`RESET_COUN
 
 `config/rlcraftdeathpenalty.cfg`, or in-game via **Mods → RLCraft Death Penalty → Config**. Everything is in **whole hearts**, and every setting is read live - no restart, ever.
 
-<!-- IMAGE: upload images/Config.png to CurseForge, then paste its media.forgecdn.net URL here -->
+![In-game config screen](https://media.forgecdn.net/attachments/1836/874/config-png.png)
 
 | Setting | Default | What it does |
 |---|---|---|
