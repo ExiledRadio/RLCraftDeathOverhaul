@@ -37,9 +37,9 @@ is the part it lacks — and the reason this mod exists rather than being a conf
 `config/rlcraftdeathoverhaul.cfg`, or Mods → RLCraft Death Overhaul → Config. Health
 values are in whole hearts. Everything is read live; nothing needs a restart.
 
-![In-game config screen](images/Config.png)
-
 Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
+
+![Config categories](images/ConfigCategory.png)
 
 **hearts** — what dying costs you in health
 
@@ -52,6 +52,8 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 | `RESET_COUNTER_ON_SLEEP` | `false` | Sleeping clears pending deaths. Does not refund hearts |
 
 **items** — what survives, and what keeping it costs
+
+![items category](images/ConfigItems.png)
 
 | Setting | Default | Effect |
 |---|---|---|

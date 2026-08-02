@@ -69,9 +69,14 @@ Scaling Health already has flat per-death health loss and a minimum-health floor
 
 `config/rlcraftdeathoverhaul.cfg`, or in-game via **Mods → RLCraft Death Overhaul → Config**. Health values are in whole hearts, and every setting is read live - nothing needs a restart.
 
-![In-game config screen](https://media.forgecdn.net/attachments/1836/874/config-png.png)
-
 Settings are split into four groups.
+
+<!-- IMAGE: the old config-png.png attachment shows the previous flat list and is now
+     out of date. Upload images/ConfigCategory.png and paste its URL here instead. -->
+
+<!-- OPTIONAL: images/ConfigItems.png, ConfigHearts.png and ConfigExemptions.png show the
+     individual groups if you want one under each table below. -->
+
 
 ### hearts - what dying costs you in health
 
