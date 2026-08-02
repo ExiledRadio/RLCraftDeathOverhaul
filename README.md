@@ -1,135 +1,110 @@
-# RLCraft Death Penalty
+# RLCraft Death Overhaul
 
-A Forge 1.12.2 addon that replaces "die once, lose everything" with a health cost you
-actually feel — without resorting to `keepInventory`.
+Forge 1.12.2 addon. Dying costs you hearts off your maximum health instead of your whole
+inventory. Works out of the box — no config editing, no second mod to set up.
 
-Dying takes hearts off your maximum health, permanently, down to a floor you set. Hearts
-come back the way they always did: [Scaling Health](https://www.curseforge.com/minecraft/mc-mods/scaling-health)
-heart containers. Death stops being a total wipe and becomes a resource you can't farm
-your way out of.
+Requires [Scaling Health](https://www.curseforge.com/minecraft/mc-mods/scaling-health).
+Built for RLCraft and RLCraft Dregora, but nothing in it is pack-specific.
 
-Built for **RLCraft Dregora**, but nothing in it is pack-specific — it works on any 1.12.2
-pack with Scaling Health.
+## What happens when you die
 
-## Why this instead of the settings that already exist
+| | |
+|---|---|
+| **Kept** | Armour, hotbar, mainhand, offhand, Baubles (which covers the Tool Belt), Wearable Backpack and its contents |
+| **Dropped** | Your main inventory — the 27 non-hotbar slots |
+| **Drops never despawn** | Vanilla deletes them after 5 minutes. Now the pile waits indefinitely |
+| **Durability** | 10% off every damageable item you kept. Never breaks anything — stops at 1 durability |
+| **Health** | One heart off your max, down to a floor. Recovered only via heart containers |
 
-Scaling Health already has `Health Lost On Death` and `Min Health`. If flat "every death
-costs a heart, floor at N" is all you want, **use those and skip this mod entirely.**
+## The heart floor
 
-What Scaling Health has no concept of is a *grace period*. This mod adds one: die N times
-before anything is charged. That turns death from a per-incident tax into a budget, which
-is the difference between "I'm scared to leave base" and "I have three mistakes left".
+`MIN_HEARTS` defaults to `10`, matching Scaling Health's `Starting Health`. So the hearts
+you start with can never be taken, and only hearts you added with heart containers are at
+risk. Dying early costs nothing; spending a heart container becomes a decision.
 
-While it's installed, this mod takes over health-on-death completely. It snapshots your
-max health before Scaling Health's respawn handler runs and writes the final value after,
-so Scaling Health's own `Health Lost On Death` can never double-charge you — leave it at
-`0` to avoid confusion, but nothing breaks if you don't.
+If you change Scaling Health's `Starting Health`, change `MIN_HEARTS` to match.
+
+## Grace period
+
+`DEATHS_PER_PENALTY` sets how many deaths it takes to be charged. Default `1`. Set it to
+`3` for two free deaths before the third takes a heart.
+
+Scaling Health already has flat per-death health loss and a health floor. The grace period
+is the part it lacks — and the reason this mod exists rather than being a config change.
 
 ## Settings
 
-`config/rlcraftdeathpenalty.cfg`, or in-game via Mods → RLCraft Death Penalty → Config.
-Everything is in **whole hearts** and read live — no restart needed.
+`config/rlcraftdeathoverhaul.cfg`, or Mods → RLCraft Death Overhaul → Config. Health
+values are in whole hearts. Everything is read live; nothing needs a restart.
 
 ![In-game config screen](images/Config.png)
 
-| Setting | Default | What it does |
+| Setting | Default | Effect |
 |---|---|---|
-| `HEARTS_LOST_PER_PENALTY` | `1.0` | Hearts removed per penalty. `0.5` for half a heart; `0` to track deaths without charging. |
-| `DEATHS_PER_PENALTY` | `1` | Deaths required to trigger one penalty. `3` = two free deaths, then the third bites. |
-| `MIN_HEARTS` | `10.0` | The floor. You can never be penalised below this. See below. |
-| `RESET_COUNTER_ON_PENALTY` | `true` | Grace period repeats. Set `false` to make it one-time-only. |
-| `RESET_COUNTER_ON_SLEEP` | `false` | Sleeping through the night forgives pending deaths. Does **not** refund hearts. |
-| `COUNT_CREATIVE_DEATHS` | `false` | Whether creative/spectator deaths count. |
-| `ANNOUNCE_PENALTY` | `true` | Tell the player in chat when they're charged. |
-| `ANNOUNCE_PROGRESS` | `true` | Tell them how many deaths remain when they aren't. |
-| `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone. |
-| `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
-| `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that don't count — `fall`, `lava`, `cactus`, … |
-| `KEEP_INVENTORY` | `true` | Master switch for keeping items. See below. |
-| `KEEP_ARMOR` | `true` | Keep equipped armour. |
-| `KEEP_HOTBAR` | `true` | Keep hotbar items other than the held one. |
-| `KEEP_MAINHAND` | `true` | Keep the item you were holding. |
-| `KEEP_OFFHAND` | `true` | Keep the offhand item. |
-| `KEEP_MAIN_INVENTORY` | **`false`** | Keep the 27 non-hotbar slots. The thing you're meant to lose. |
-| `KEEP_BAUBLES` | `true` | Keep equipped Baubles. Also covers the Tool Belt. |
-| `KEEP_WEARABLE_BACKPACK` | `true` | Keep your backpack and its contents. |
-| `KEEP_XP` | `false` | Keep experience instead of dropping it. |
-| `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on everything you keep. |
-| `NO_DROP_DESPAWN` | `true` | Items you *did* drop never despawn. |
+| `HEARTS_LOST_PER_PENALTY` | `1.0` | Hearts per penalty. Accepts halves. `0` disables health loss |
+| `DEATHS_PER_PENALTY` | `1` | Deaths needed to trigger a penalty |
+| `MIN_HEARTS` | `10.0` | Health floor |
+| `RESET_COUNTER_ON_PENALTY` | `true` | Grace period repeats rather than being one-time |
+| `RESET_COUNTER_ON_SLEEP` | `false` | Sleeping clears pending deaths. Does not refund hearts |
+| `COUNT_CREATIVE_DEATHS` | `false` | Whether creative and spectator deaths count |
+| `ANNOUNCE_PENALTY` | `true` | Chat message when charged |
+| `ANNOUNCE_PROGRESS` | `true` | Chat message showing deaths remaining |
+| `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone |
+| `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free |
+| `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that do not count |
+| `KEEP_INVENTORY` | `true` | Master switch for keeping items |
+| `KEEP_ARMOR` / `KEEP_HOTBAR` / `KEEP_MAINHAND` / `KEEP_OFFHAND` | `true` | Equipped slots |
+| `KEEP_BAUBLES` | `true` | Baubles, and the Tool Belt with them |
+| `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents |
+| `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots |
+| `KEEP_XP` | `false` | Keep experience instead of dropping it |
+| `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items |
+| `NO_DROP_DESPAWN` | `true` | Dropped items never despawn |
 
-`EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name, **not** the death message.
-If you don't know a modded one, set the log level to debug — every death this mod sees is
-logged with its damage type.
-
-### Why the floor defaults to 10 hearts
-
-Because that's exactly what you start with. Scaling Health's `Starting Health` is 20
-half-hearts, so a floor of 10 hearts means **the hearts you were born with can never be
-taken away, and only the ones you added with heart containers are ever at stake.**
-
-Two things fall out of that, both intended:
-
-- Dying while you're still learning the pack costs you nothing. New players aren't
-  punished for the deaths that are going to happen anyway.
-- Every heart container becomes a decision instead of a free upgrade. Using one puts it
-  permanently at risk — so the question stops being "can I craft another heart?" and
-  becomes "do I trust myself with the next fight enough to bank this now?"
-
-The penalty only has teeth once you've chosen to give it teeth. If you change Scaling
-Health's `Starting Health`, change `MIN_HEARTS` to match or the effect is lost.
+`EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name (`fall`, `lava`, `cactus`),
+not the chat death message. Set the log to debug and every death is logged with its type.
 
 ![Dying at the floor costs nothing](images/DeathMessage.png)
 
 ## Commands
 
-| Command | Permission | |
+| Command | Permission | Effect |
 |---|---|---|
-| `/deathpenalty status` | anyone | Your max health, floor, deaths banked, and lifetime totals. |
-| `/deathpenalty status <player>` | level 2 | Same, for someone else. |
-| `/deathpenalty reset <player>` | level 2 | Clears counters. Does not refund hearts. |
-| `/deathpenalty sethearts <player> <hearts>` | level 2 | Sets max health directly — the way to hand hearts back. |
+| `/deathoverhaul status` | anyone | Max health, floor, deaths banked, lifetime totals |
+| `/deathoverhaul status <player>` | op | Same, for another player |
+| `/deathoverhaul reset <player>` | op | Clears counters. Does not refund hearts |
+| `/deathoverhaul sethearts <player> <hearts>` | op | Sets max health. How you give hearts back |
 
-Aliased to `/dp`.
+Aliased to `/dov` and `/dp`.
 
-## Keeping your items — already done for you
+## Compatibility
 
-Install the mod and it works. No config editing, no second mod to set up.
+If another mod already keeps items on death — Corpse Complex, a gravestone mod — turn one
+of the two off, or set `KEEP_INVENTORY=false`. Two mods saving one inventory can duplicate
+or lose items; the log warns if one is detected. Out of the box there is no clash, since
+Corpse Complex ships with RLCraft with its Inventory Module disabled.
 
-RLCraft ships with every keep-item option turned off, so a mod whose whole premise is
-*"you pay in hearts instead"* would be useless out of the box — you'd lose your inventory
-**and** your hearts. So `KEEP_INVENTORY` defaults to on, and on death you keep:
+The vanilla `keepInventory` gamerule takes precedence — with it on, this mod does not touch
+your inventory at all.
 
-- **Armour, hotbar, mainhand and offhand** — your whole equipped kit
-- **Baubles** — rings, amulets, belts. This also covers the **Tool Belt**, which sits in a
-  Baubles slot whenever Baubles is installed
-- **Your Wearable Backpack**, contents included
+Baubles and Wearable Backpacks are optional. Their settings are ignored when absent, and
+their classes are never loaded.
 
-You still **drop your main inventory** — the 27 non-hotbar slots. That's deliberate and
-it's the one default left off. Your loot and materials are what makes a death sting right
-now; the hearts are what makes it sting later.
+## Implementation notes
 
-Two things soften the edges:
-
-- **`DURABILITY_LOSS_ON_KEPT_ITEMS`** (10%) charges every damageable item you kept, so
-  surviving with your gear isn't free. It never destroys anything — an item that would
-  break is left on its last point of durability.
-- **`NO_DROP_DESPAWN`** (on) means the pile you *did* drop waits for you forever instead
-  of five minutes. RLCraft's Return Scroll is already enabled, so going back is realistic.
-
-### Turning it off
-
-Set `KEEP_INVENTORY=false` and the mod won't touch your inventory at all — death drops go
-back to whatever your pack does, and hearts remain the only thing this mod changes. Or
-flip the individual `KEEP_*` options to taste.
-
-**If another mod already handles death drops** — Corpse Complex, a gravestone mod — turn
-one of them off. Two mods saving the same inventory can duplicate or lose items. The mod
-logs a warning at startup if it spots one. Corpse Complex ships with RLCraft but has its
-Inventory Module disabled by default, so out of the box there's no clash.
-
-**The vanilla `keepInventory` gamerule always wins.** With it on, this mod leaves your
-inventory completely alone — vanilla is already keeping everything, and stepping in would
-destroy whatever it wasn't told to save.
+- Health-on-death is taken over entirely. Max health is snapshotted on
+  `PlayerRespawnEvent` at `HIGHEST` priority and written back at `LOWEST`, straddling
+  Scaling Health's own `NORMAL` handler, so the two can never both charge for one death.
+- Kept items and the death counter live in the player's `PlayerPersisted` NBT tag, which
+  `EntityPlayerMP.clonePlayer` copies unconditionally — not gated on `keepInventory`.
+  Storing them there rather than in memory means a logout on the death screen or a server
+  restart cannot lose them.
+- Items are lifted out during `LivingDeathEvent`, which fires before
+  `EntityPlayer.onDeath` calls `dropAllItems()`, so vanilla never sees them.
+- Curse of Vanishing is respected: cursed items are never kept.
+- There is no separate Tool Belt option. With Baubles installed the belt sits in a Baubles
+  slot, so `KEEP_BAUBLES` covers it; stashing it again through Tool Belt's own API would
+  find the same stack twice and duplicate it.
 
 ## Building
 
@@ -137,17 +112,13 @@ destroy whatever it wasn't told to save.
 gradlew build
 ```
 
-Needs `deps/ScalingHealth-1.12.2-1.3.42.jar` and `deps/SilentLib-1.12.2-3.0.14.jar` —
-see [deps/README.md](deps/README.md). Do not raise `forge_version` past `14.23.5.2847`;
-see the note in [gradle.properties](gradle.properties).
+Needs the jars listed in [deps/README.md](deps/README.md). Do not raise `forge_version`
+past `14.23.5.2847` — see the note in [gradle.properties](gradle.properties).
 
 ## Feedback
 
-Especially welcome on whether the defaults feel right — the balance between the floor,
-the cost and the grace period is the whole design.
-
 - **Discord:** [discord.gg/kxQvMDJBTN](https://discord.gg/kxQvMDJBTN)
-- **Bug reports:** the [issue tracker](https://github.com/ExiledRadio/RLCraftDeathPenalty/issues)
+- **Issues:** [issue tracker](https://github.com/ExiledRadio/RLCraftDeathOverhaul/issues)
 
 ## Not affiliated
 

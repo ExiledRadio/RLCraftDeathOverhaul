@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty.compat;
+package com.exiledradio.rlcraftdeathoverhaul.compat;
 
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;

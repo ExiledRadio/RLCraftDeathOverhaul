@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,10 +23,10 @@ public class ModGuiFactory implements IModGuiFactory {
         return new GuiConfig(
                 parentScreen,
                 ModConfig.getConfigElements(),
-                RLCraftDeathPenalty.MODID,
+                RLCraftDeathOverhaul.MODID,
                 false,
                 false,
-                "RLCraft Death Penalty Config"
+                "RLCraft Death Overhaul Config"
         );
     }
 

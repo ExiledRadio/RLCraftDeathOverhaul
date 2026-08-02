@@ -1,5 +1,5 @@
 """
-Project avatar for RLCraft Death Penalty.
+Project avatar for RLCraft Death Overhaul.
 
 Deliberately matched to the RLCraft Enchantment Recipes avatar so the two read as a
 set: 512px squircle, near-black radial background, one centred flat-vector subject

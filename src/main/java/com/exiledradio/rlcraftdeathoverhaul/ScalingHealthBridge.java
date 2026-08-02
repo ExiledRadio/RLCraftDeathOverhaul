@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.silentchaos512.scalinghealth.config.Config;
@@ -89,7 +89,7 @@ public final class ScalingHealthBridge {
      */
     public static void logCompatibilityWarnings() {
         if (!isHealthModificationAllowed()) {
-            RLCraftDeathPenalty.LOGGER.warn(
+            RLCraftDeathOverhaul.LOGGER.warn(
                     "Scaling Health's \"Allow Modified Health\" is false, so it will reject every "
                             + "health change. This mod cannot do anything until that is set to true "
                             + "(config/scalinghealth/main.cfg -> player -> health).");
@@ -97,7 +97,7 @@ public final class ScalingHealthBridge {
 
         int shLostOnDeath = getScalingHealthLostOnDeath();
         if (shLostOnDeath != 0) {
-            RLCraftDeathPenalty.LOGGER.warn(
+            RLCraftDeathOverhaul.LOGGER.warn(
                     "Scaling Health's \"Health Lost On Death\" is {} half-hearts. This mod takes over "
                             + "death health loss entirely and undoes Scaling Health's subtraction on "
                             + "respawn, so that setting no longer does anything. Set it to 0 to avoid "
@@ -107,7 +107,7 @@ public final class ScalingHealthBridge {
         int shMax = getScalingHealthMaxHealth();
         float configuredMinHp = ModConfig.getMinHealthHp();
         if (shMax > 0 && configuredMinHp > shMax) {
-            RLCraftDeathPenalty.LOGGER.warn(
+            RLCraftDeathOverhaul.LOGGER.warn(
                     "MIN_HEARTS is {} half-hearts, which is above Scaling Health's max health cap of {}. "
                             + "Scaling Health will clamp players down to the cap, so the floor cannot be "
                             + "reached.", configuredMinHp, shMax);

@@ -1,7 +1,7 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
-import com.exiledradio.rlcraftdeathpenalty.compat.BackpackCompat;
-import com.exiledradio.rlcraftdeathpenalty.compat.BaublesCompat;
+import com.exiledradio.rlcraftdeathoverhaul.compat.BackpackCompat;
+import com.exiledradio.rlcraftdeathoverhaul.compat.BaublesCompat;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
  * on the death screen, or a server that restarts while they are dead, would lose
  * everything held only in memory.
  */
-@Mod.EventBusSubscriber(modid = RLCraftDeathPenalty.MODID)
+@Mod.EventBusSubscriber(modid = RLCraftDeathOverhaul.MODID)
 public class InventoryKeepHandler {
 
     private static final String MODID_BAUBLES = "baubles";
@@ -307,7 +307,7 @@ public class InventoryKeepHandler {
         }
         for (String modid : CONFLICTING_MODS) {
             if (Loader.isModLoaded(modid)) {
-                RLCraftDeathPenalty.LOGGER.warn(
+                RLCraftDeathOverhaul.LOGGER.warn(
                         "KEEP_INVENTORY is on and '{}' is also installed. Check it is not set to "
                                 + "keep items as well - only one mod should be. Two mods saving one "
                                 + "inventory can duplicate or lose items, and whichever runs second "

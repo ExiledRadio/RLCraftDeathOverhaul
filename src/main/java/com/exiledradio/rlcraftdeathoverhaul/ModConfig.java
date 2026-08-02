@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -19,7 +19,7 @@ import java.util.Set;
  * think in. Scaling Health's own config is in half-hearts, so anything crossing into
  * {@link ScalingHealthBridge} goes through the {@code ...Hp()} accessors at the bottom.
  */
-@Mod.EventBusSubscriber(modid = RLCraftDeathPenalty.MODID)
+@Mod.EventBusSubscriber(modid = RLCraftDeathOverhaul.MODID)
 public class ModConfig {
 
     public static Configuration config;
@@ -316,7 +316,7 @@ public class ModConfig {
             config.save();
         }
 
-        RLCraftDeathPenalty.LOGGER.info("Config loaded - {} heart(s) lost every {} death(s), floor {} hearts",
+        RLCraftDeathOverhaul.LOGGER.info("Config loaded - {} heart(s) lost every {} death(s), floor {} hearts",
                 HEARTS_LOST_PER_PENALTY, DEATHS_PER_PENALTY, MIN_HEARTS);
     }
 
@@ -328,7 +328,7 @@ public class ModConfig {
 
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(RLCraftDeathPenalty.MODID)) {
+        if (event.getModID().equals(RLCraftDeathOverhaul.MODID)) {
             // Every setting is read live at death/respawn time, so a reload is enough —
             // nothing here needs a restart to take effect.
             loadConfig();

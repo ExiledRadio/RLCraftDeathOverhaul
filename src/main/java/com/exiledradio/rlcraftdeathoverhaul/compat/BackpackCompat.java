@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty.compat;
+package com.exiledradio.rlcraftdeathoverhaul.compat;
 
 import net.mcft.copy.backpacks.api.BackpackHelper;
 import net.mcft.copy.backpacks.api.IBackpack;

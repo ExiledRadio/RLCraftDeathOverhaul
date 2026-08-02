@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -8,20 +8,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(
-        modid = RLCraftDeathPenalty.MODID,
-        name = RLCraftDeathPenalty.NAME,
-        version = RLCraftDeathPenalty.VERSION,
-        guiFactory = "com.exiledradio.rlcraftdeathpenalty.ModGuiFactory",
+        modid = RLCraftDeathOverhaul.MODID,
+        name = RLCraftDeathOverhaul.NAME,
+        version = RLCraftDeathOverhaul.VERSION,
+        guiFactory = "com.exiledradio.rlcraftdeathoverhaul.ModGuiFactory",
         // Hard dependency. Every health change this mod makes goes through Scaling
         // Health's player data, so there is nothing to do without it — and declaring
         // it here means Forge blocks loading rather than letting us hit a
         // NoClassDefFoundError on the first death.
         dependencies = "required-after:scalinghealth"
 )
-public class RLCraftDeathPenalty {
+public class RLCraftDeathOverhaul {
 
-    public static final String MODID = "rlcraftdeathpenalty";
-    public static final String NAME = "RLCraft Death Penalty";
+    public static final String MODID = "rlcraftdeathoverhaul";
+    public static final String NAME = "RLCraft Death Overhaul";
     // Replaced at build time by ForgeGradle from mod_version in gradle.properties.
     // Shows literally as "@VERSION@" in IDE dev runs; that is expected.
     public static final String VERSION = "@VERSION@";
@@ -35,7 +35,7 @@ public class RLCraftDeathPenalty {
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandDeathPenalty());
+        event.registerServerCommand(new CommandDeathOverhaul());
         // Deferred to server start because it reads Scaling Health's config, which is
         // only guaranteed to be fully populated once every mod has finished loading.
         ScalingHealthBridge.logCompatibilityWarnings();

@@ -39,7 +39,7 @@ minecraft {
 	runDir = "eclipse"
 
 	replace '@VERSION@', project.version
-	replaceIn 'RLCraftDeathPenalty.java'
+	replaceIn 'RLCraftDeathOverhaul.java'
 }
 
 processResources {
@@ -106,7 +106,7 @@ task deployToInstance(type: Copy) {
 	onlyIf { deployDir && file(deployDir).isDirectory() }
 	from jar.archivePath
 	into deployDir ?: "$buildDir/deploy"
-	rename { "RLCraftDeathPenalty-${project.version}.jar" }
+	rename { "RLCraftDeathOverhaul-${project.version}.jar" }
 }
 
 deployToInstance.dependsOn reobfJar

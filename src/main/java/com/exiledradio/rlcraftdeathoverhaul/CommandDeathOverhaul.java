@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -15,29 +15,30 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * {@code /deathpenalty} — inspect and administer the death ledger.
+ * {@code /deathoverhaul} — inspect and administer the death ledger.
  *
  * <p>{@code status} is available to everyone so players can check their own standing;
  * the subcommands that change state require permission level 2, the same level vanilla
  * requires for {@code /gamemode}.
  */
-public class CommandDeathPenalty extends CommandBase {
+public class CommandDeathOverhaul extends CommandBase {
 
     private static final int ADMIN_PERMISSION_LEVEL = 2;
 
     @Override
     public String getName() {
-        return "deathpenalty";
+        return "deathoverhaul";
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("dp");
+        // "dp" carried over from when this mod was called Death Penalty.
+        return Arrays.asList("dov", "dp");
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/deathpenalty <status|reset|sethearts> [player] [hearts]";
+        return "/deathoverhaul <status|reset|sethearts> [player] [hearts]";
     }
 
     /**
@@ -89,7 +90,7 @@ public class CommandDeathPenalty extends CommandBase {
         int remaining = Math.max(0, ModConfig.DEATHS_PER_PENALTY - deaths);
 
         sender.sendMessage(new TextComponentString(TextFormatting.GOLD
-                + "--- Death Penalty: " + target.getName() + " ---"));
+                + "--- Death Overhaul: " + target.getName() + " ---"));
         sender.sendMessage(line("Max health",
                 maxHp < 0.0F ? "unknown (no Scaling Health data)"
                         : DeathPenaltyHandler.formatHearts(maxHp) + " hearts"));
@@ -109,20 +110,20 @@ public class CommandDeathPenalty extends CommandBase {
             throws CommandException {
         checkAdmin(sender);
         if (args.length < 2) {
-            throw new WrongUsageException("/deathpenalty reset <player>");
+            throw new WrongUsageException("/deathoverhaul reset <player>");
         }
         EntityPlayer target = getPlayer(server, sender, args[1]);
         DeathPenaltyData.reset(target);
         notifyCommandListener(sender, this, "Cleared the death ledger for %s. "
                 + "This resets counters only - it does not give hearts back "
-                + "(use /deathpenalty sethearts for that).", target.getName());
+                + "(use /deathoverhaul sethearts for that).", target.getName());
     }
 
     private void executeSetHearts(MinecraftServer server, ICommandSender sender, String[] args)
             throws CommandException {
         checkAdmin(sender);
         if (args.length < 3) {
-            throw new WrongUsageException("/deathpenalty sethearts <player> <hearts>");
+            throw new WrongUsageException("/deathoverhaul sethearts <player> <hearts>");
         }
         EntityPlayer target = getPlayer(server, sender, args[1]);
         // Scaling Health refuses anything under one heart and clamps to its own cap, so

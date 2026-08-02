@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Scaling Health did in between is overwritten, so the two mods can never both charge
  * for the same death.
  */
-@Mod.EventBusSubscriber(modid = RLCraftDeathPenalty.MODID)
+@Mod.EventBusSubscriber(modid = RLCraftDeathOverhaul.MODID)
 public class DeathPenaltyHandler {
 
     /**
@@ -45,7 +45,7 @@ public class DeathPenaltyHandler {
      */
     private static final Map<UUID, Float> PRE_RESPAWN_MAX_HEALTH = new ConcurrentHashMap<UUID, Float>();
 
-    private static final String PREFIX = TextFormatting.DARK_RED + "[Death Penalty] " + TextFormatting.RESET;
+    private static final String PREFIX = TextFormatting.DARK_RED + "[Death Overhaul] " + TextFormatting.RESET;
 
     // ------------------------------------------------------------------
     // Death: decide whether this death counts, and bank it for the respawn
@@ -69,20 +69,20 @@ public class DeathPenaltyHandler {
 
         String damageType = event.getSource() == null ? "unknown" : event.getSource().getDamageType();
         int dimension = player.world.provider.getDimension();
-        RLCraftDeathPenalty.LOGGER.debug("{} died - damage type '{}', dimension {}",
+        RLCraftDeathOverhaul.LOGGER.debug("{} died - damage type '{}', dimension {}",
                 player.getName(), damageType, dimension);
 
         if (!ModConfig.COUNT_CREATIVE_DEATHS && (player.isCreative() || player.isSpectator())) {
-            RLCraftDeathPenalty.LOGGER.debug("Ignoring death of {}: creative/spectator", player.getName());
+            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: creative/spectator", player.getName());
             return;
         }
         if (ModConfig.isDimensionExempt(dimension)) {
-            RLCraftDeathPenalty.LOGGER.debug("Ignoring death of {}: dimension {} is exempt",
+            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: dimension {} is exempt",
                     player.getName(), dimension);
             return;
         }
         if (ModConfig.isDamageTypeExempt(damageType)) {
-            RLCraftDeathPenalty.LOGGER.debug("Ignoring death of {}: damage type '{}' is exempt",
+            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: damage type '{}' is exempt",
                     player.getName(), damageType);
             return;
         }
@@ -90,7 +90,7 @@ public class DeathPenaltyHandler {
         DeathPenaltyData.incrementTotalDeaths(player);
         int deaths = DeathPenaltyData.incrementDeathsSincePenalty(player);
         DeathPenaltyData.setDeathPending(player, true);
-        RLCraftDeathPenalty.LOGGER.debug("{} now has {} death(s) toward a penalty of {}",
+        RLCraftDeathOverhaul.LOGGER.debug("{} now has {} death(s) toward a penalty of {}",
                 player.getName(), deaths, ModConfig.DEATHS_PER_PENALTY);
     }
 
@@ -163,7 +163,7 @@ public class DeathPenaltyHandler {
      */
     private static void restoreIfChanged(EntityPlayer player, float baselineHp, float currentMaxHp) {
         if (Math.abs(baselineHp - currentMaxHp) > 0.001F) {
-            RLCraftDeathPenalty.LOGGER.debug(
+            RLCraftDeathOverhaul.LOGGER.debug(
                     "Undoing Scaling Health's own death loss for {}: {} -> {} HP",
                     player.getName(), currentMaxHp, baselineHp);
             ScalingHealthBridge.setMaxHealth(player, baselineHp);
@@ -184,7 +184,7 @@ public class DeathPenaltyHandler {
 
         if (Math.abs(targetHp - currentMaxHp) > 0.001F) {
             if (!ScalingHealthBridge.setMaxHealth(player, targetHp)) {
-                RLCraftDeathPenalty.LOGGER.warn(
+                RLCraftDeathOverhaul.LOGGER.warn(
                         "Scaling Health rejected the health change for {} - is \"Allow Modified "
                                 + "Health\" set to false?", player.getName());
                 return false;
@@ -196,7 +196,7 @@ public class DeathPenaltyHandler {
             DeathPenaltyData.addTotalHeartsLost(player, actualLossHp / 2.0F);
         }
 
-        RLCraftDeathPenalty.LOGGER.debug("Penalty for {}: {} -> {} HP (lost {})",
+        RLCraftDeathOverhaul.LOGGER.debug("Penalty for {}: {} -> {} HP (lost {})",
                 player.getName(), baselineHp, targetHp, actualLossHp);
 
         announcePenalty(player, actualLossHp, targetHp, minHp);

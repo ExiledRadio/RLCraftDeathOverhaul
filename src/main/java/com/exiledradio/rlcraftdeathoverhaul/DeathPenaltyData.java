@@ -1,4 +1,4 @@
-package com.exiledradio.rlcraftdeathpenalty;
+package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,13 +20,13 @@ public final class DeathPenaltyData {
     }
 
     /** Our sub-compound inside PlayerPersisted, so we never collide with another mod's keys. */
-    private static final String ROOT = RLCraftDeathPenalty.MODID;
+    private static final String ROOT = RLCraftDeathOverhaul.MODID;
 
     /** Deaths accumulated since the last time a penalty was charged. */
     private static final String KEY_DEATHS = "deathsSincePenalty";
     /** Set at death, consumed at respawn — tells the two handlers a real death happened. */
     private static final String KEY_PENDING = "pendingDeath";
-    /** Lifetime counters, for the /deathpenalty status readout. */
+    /** Lifetime counters, for the /deathoverhaul status readout. */
     private static final String KEY_TOTAL_DEATHS = "totalDeaths";
     private static final String KEY_TOTAL_HEARTS_LOST = "totalHeartsLost";
 
@@ -153,7 +153,7 @@ public final class DeathPenaltyData {
         ours.removeTag(KEY_KEPT_XP);
     }
 
-    /** Clears the ledger. Used by {@code /deathpenalty reset}. */
+    /** Clears the ledger. Used by {@code /deathoverhaul reset}. */
     public static void reset(EntityPlayer player) {
         NBTTagCompound ours = root(player);
         ours.setInteger(KEY_DEATHS, 0);
