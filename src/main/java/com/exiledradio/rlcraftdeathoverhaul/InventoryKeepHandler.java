@@ -57,7 +57,7 @@ public class InventoryKeepHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingDeath(LivingDeathEvent event) {
-        if (!ModConfig.KEEP_INVENTORY || !(event.getEntity() instanceof EntityPlayer)) {
+        if (!ModConfig.ENABLE_ITEM_KEEPING || !(event.getEntity() instanceof EntityPlayer)) {
             return;
         }
         EntityPlayer player = (EntityPlayer) event.getEntity();
@@ -179,7 +179,7 @@ public class InventoryKeepHandler {
             return;
         }
 
-        // Deliberately not gated on ModConfig.KEEP_INVENTORY. If the option is switched
+        // Deliberately not gated on ModConfig.ENABLE_ITEM_KEEPING. If the option is switched
         // off while someone is sitting on the death screen, their gear still has to come
         // back — the alternative is silently eating it.
         boolean any = false;
@@ -275,7 +275,7 @@ public class InventoryKeepHandler {
 
     @SubscribeEvent
     public static void onExperienceDrop(LivingExperienceDropEvent event) {
-        if (!ModConfig.KEEP_INVENTORY || !ModConfig.KEEP_XP
+        if (!ModConfig.ENABLE_ITEM_KEEPING || !ModConfig.KEEP_XP
                 || !(event.getEntityLiving() instanceof EntityPlayer)) {
             return;
         }
@@ -302,13 +302,13 @@ public class InventoryKeepHandler {
      * perfectly fine alongside.
      */
     public static void logCompatibilityWarnings() {
-        if (!ModConfig.KEEP_INVENTORY) {
+        if (!ModConfig.ENABLE_ITEM_KEEPING) {
             return;
         }
         for (String modid : CONFLICTING_MODS) {
             if (Loader.isModLoaded(modid)) {
                 RLCraftDeathOverhaul.LOGGER.warn(
-                        "KEEP_INVENTORY is on and '{}' is also installed. Check it is not set to "
+                        "ENABLE_ITEM_KEEPING is on and '{}' is also installed. Check it is not set to "
                                 + "keep items as well - only one mod should be. Two mods saving one "
                                 + "inventory can duplicate or lose items, and whichever runs second "
                                 + "looks like it is doing nothing.", modid);

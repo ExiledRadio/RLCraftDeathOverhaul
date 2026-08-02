@@ -52,7 +52,7 @@ values are in whole hearts. Everything is read live; nothing needs a restart.
 | `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone |
 | `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free |
 | `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that do not count |
-| `KEEP_INVENTORY` | `true` | Master switch for keeping items |
+| `ENABLE_ITEM_KEEPING` | `true` | Master switch for keeping items |
 | `KEEP_ARMOR` / `KEEP_HOTBAR` / `KEEP_MAINHAND` / `KEEP_OFFHAND` | `true` | Equipped slots |
 | `KEEP_BAUBLES` | `true` | Baubles, and the Tool Belt with them |
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents |
@@ -80,7 +80,7 @@ Aliased to `/dov` and `/dp`.
 ## Compatibility
 
 If another mod already keeps items on death — Corpse Complex, a gravestone mod — turn one
-of the two off, or set `KEEP_INVENTORY=false`. Two mods saving one inventory can duplicate
+of the two off, or set `ENABLE_ITEM_KEEPING=false`. Two mods saving one inventory can duplicate
 or lose items; the log warns if one is detected. Out of the box there is no clash, since
 Corpse Complex ships with RLCraft with its Inventory Module disabled.
 

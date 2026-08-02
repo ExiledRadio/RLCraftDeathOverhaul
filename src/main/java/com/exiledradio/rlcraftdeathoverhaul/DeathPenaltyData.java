@@ -84,7 +84,7 @@ public final class DeathPenaltyData {
         root(player).setFloat(KEY_TOTAL_HEARTS_LOST, getTotalHeartsLost(player) + hearts);
     }
 
-    // --- Items held across the respawn while KEEP_INVENTORY is on ---
+    // --- Items held across the respawn while ENABLE_ITEM_KEEPING is on ---
     //
     // These ride in the same persisted tag as the counters rather than a static map, so
     // a server restart or a logout on the death screen cannot lose someone's gear.

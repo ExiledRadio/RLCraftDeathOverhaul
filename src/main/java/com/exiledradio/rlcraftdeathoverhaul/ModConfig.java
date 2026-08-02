@@ -36,7 +36,7 @@ public class ModConfig {
     public static int[] EXEMPT_DIMENSIONS = new int[0];
     public static String[] EXEMPT_DAMAGE_TYPES = new String[0];
 
-    public static boolean KEEP_INVENTORY = true;
+    public static boolean ENABLE_ITEM_KEEPING = true;
     public static boolean KEEP_ARMOR = true;
     public static boolean KEEP_HOTBAR = true;
     public static boolean KEEP_MAINHAND = true;
@@ -189,20 +189,21 @@ public class ModConfig {
                         + "Empty (default) exempts nothing."
         );
 
-        KEEP_INVENTORY = config.getBoolean(
-                "KEEP_INVENTORY",
+        ENABLE_ITEM_KEEPING = config.getBoolean(
+                "ENABLE_ITEM_KEEPING",
                 Configuration.CATEGORY_GENERAL,
                 true,
-                "Master switch for keeping items on death. ON by default, so the mod works the\n"
-                        + "way it is meant to straight out of the box with no setup.\n"
+                "Master on/off switch for this mod's item handling. ON by default, so the mod\n"
+                        + "works as intended straight out of the box with no setup.\n"
                         + "\n"
-                        + "The point of this mod is that hearts are the price of dying, not your\n"
-                        + "inventory. RLCraft ships with every keep-item setting turned off, so without\n"
-                        + "this you would still lose everything and the heart cost would just be an\n"
-                        + "extra punishment on top.\n"
+                        + "This does NOT mean \"keep everything\". It only turns the feature on; what\n"
+                        + "actually survives is decided by the KEEP_* settings below. By default that\n"
+                        + "is your equipped gear - armour, hotbar, both hands, Baubles, backpack -\n"
+                        + "while your main inventory still drops. See KEEP_MAIN_INVENTORY.\n"
                         + "\n"
-                        + "Set to false to hand item handling back to your pack - useful if you would\n"
-                        + "rather configure Corpse Complex, a gravestone mod, or nothing at all.\n"
+                        + "Set to false to leave your inventory completely untouched and hand death\n"
+                        + "drops back to your pack - Corpse Complex, a gravestone mod, or nothing.\n"
+                        + "The heart cost still applies either way.\n"
                         + "\n"
                         + "IMPORTANT: if another mod is also set to keep items, turn one of them off.\n"
                         + "Two mods saving the same inventory can duplicate or lose items.\n"
@@ -213,35 +214,39 @@ public class ModConfig {
 
         KEEP_ARMOR = config.getBoolean(
                 "KEEP_ARMOR", Configuration.CATEGORY_GENERAL, true,
-                "Keep equipped armour on death. Only applies when KEEP_INVENTORY is true."
+                "Keep equipped armour on death. Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         KEEP_HOTBAR = config.getBoolean(
                 "KEEP_HOTBAR", Configuration.CATEGORY_GENERAL, true,
                 "Keep hotbar items on death, not counting whatever you were holding -\n"
-                        + "that one is KEEP_MAINHAND. Only applies when KEEP_INVENTORY is true."
+                        + "that one is KEEP_MAINHAND. Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         KEEP_MAINHAND = config.getBoolean(
                 "KEEP_MAINHAND", Configuration.CATEGORY_GENERAL, true,
                 "Keep the item you were holding when you died.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
+                        + "Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         KEEP_OFFHAND = config.getBoolean(
                 "KEEP_OFFHAND", Configuration.CATEGORY_GENERAL, true,
-                "Keep the offhand item on death. Only applies when KEEP_INVENTORY is true."
+                "Keep the offhand item on death. Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         KEEP_MAIN_INVENTORY = config.getBoolean(
                 "KEEP_MAIN_INVENTORY", Configuration.CATEGORY_GENERAL, false,
                 "Keep the main inventory - the 27 slots that are not the hotbar - on death.\n"
-                        + "OFF by default, and the one thing you are meant to lose: dropping your loot\n"
-                        + "and materials is what makes a death sting in the moment, while the hearts\n"
-                        + "are the lasting cost. Your gear survives, your haul does not.\n"
-                        + "Turning this on as well means you keep literally everything, and the hearts\n"
-                        + "become the only penalty at all.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
+                        + "\n"
+                        + "OFF by default, and this is the setting that makes the mod work. Dropping\n"
+                        + "your loot and materials is what gives you a reason to go back for your\n"
+                        + "death pile; your gear surviving is what makes going back possible. Turn\n"
+                        + "this on and you keep everything, nothing is left on the ground, and there\n"
+                        + "is no trip to make.\n"
+                        + "\n"
+                        + "Whatever does drop never despawns - see NO_DROP_DESPAWN - so the trip is\n"
+                        + "on your schedule.\n"
+                        + "Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         KEEP_BAUBLES = config.getBoolean(
@@ -250,7 +255,7 @@ public class ModConfig {
                         + "Ignored when Baubles is not installed.\n"
                         + "This also covers the Tool Belt, which sits in a Baubles slot whenever\n"
                         + "Baubles is present, and any other mod that equips through Baubles.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
+                        + "Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         KEEP_WEARABLE_BACKPACK = config.getBoolean(
@@ -259,7 +264,7 @@ public class ModConfig {
                         + "Ignored when Wearable Backpacks is not installed.\n"
                         + "When that mod is configured to wear backpacks in the chest armour slot,\n"
                         + "KEEP_ARMOR covers it instead and this setting does nothing.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
+                        + "Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         KEEP_XP = config.getBoolean(
@@ -267,7 +272,7 @@ public class ModConfig {
                 "Keep your experience on death instead of dropping it.\n"
                         + "OFF by default: losing levels is a normal part of dying, and RLCraft's own\n"
                         + "Corpse Complex already lets you recover some of it.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
+                        + "Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         DURABILITY_LOSS_ON_KEPT_ITEMS = config.getFloat(
@@ -282,7 +287,7 @@ public class ModConfig {
                         + "hearts in the long run and repair materials right now.\n"
                         + "Items are never destroyed by this: anything that would break is left at one\n"
                         + "point of durability instead.\n"
-                        + "Only applies when KEEP_INVENTORY is true."
+                        + "Only applies when ENABLE_ITEM_KEEPING is true."
         );
 
         NO_DROP_DESPAWN = config.getBoolean(
@@ -293,7 +298,7 @@ public class ModConfig {
                         + "Vanilla deletes dropped items after five minutes, which in a pack this large\n"
                         + "is rarely long enough to fight your way back. With this on, your death pile\n"
                         + "waits for you indefinitely.\n"
-                        + "Applies to everything you dropped whether or not KEEP_INVENTORY is on.\n"
+                        + "Applies to everything you dropped whether or not ENABLE_ITEM_KEEPING is on.\n"
                         + "Items destroyed by lava or cactus are still gone - this only stops the\n"
                         + "despawn timer, it does not make drops indestructible."
         );

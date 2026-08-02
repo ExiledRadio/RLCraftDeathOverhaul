@@ -33,7 +33,7 @@ Baubles and Wearable Backpacks are optional and their settings are ignored when 
 
 ## Compatibility
 
-If another mod already keeps items on death — Corpse Complex, a gravestone mod — turn one of the two off, or set `KEEP_INVENTORY=false`. Two mods saving one inventory can duplicate or lose items, and the log warns if one is detected. Out of the box there is no clash. The vanilla `keepInventory` gamerule takes precedence over this mod entirely.
+If another mod already keeps items on death — Corpse Complex, a gravestone mod — turn one of the two off, or set `ENABLE_ITEM_KEEPING=false`. Two mods saving one inventory can duplicate or lose items, and the log warns if one is detected. Out of the box there is no clash. The vanilla `keepInventory` gamerule takes precedence over this mod entirely.
 
 ## Install
 

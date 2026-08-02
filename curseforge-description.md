@@ -22,6 +22,26 @@ Works out of the box. No config editing, no second mod to set up.
 
 ---
 
+## Why not just use the keepInventory gamerule?
+
+Because it is all or nothing. `keepInventory` keeps *everything* - gear, loot, XP - so death stops costing anything at all, and people end up using it as fast travel. That is usually the complaint that leads them to turn it back off and go back to losing entire runs.
+
+This mod is the middle setting the gamerule cannot express:
+
+| | keepInventory | This mod |
+|---|---|---|
+| Equipped gear | Kept | Kept |
+| Main inventory | Kept | **Dropped** |
+| Items on the ground | None | **Never despawn** |
+| Durability cost | None | 10% on kept items |
+| Max health | Unchanged | **One heart, down to a floor** |
+
+You keep enough to survive the walk back, and you lose enough to make the walk worth taking.
+
+If you genuinely do want the gamerule, turn it on — this mod detects it and leaves your inventory alone rather than fighting it. The heart cost still applies.
+
+---
+
 ## The heart floor
 
 `MIN_HEARTS` defaults to **10**, the same as Scaling Health's starting health.
@@ -62,7 +82,7 @@ Scaling Health already has flat per-death health loss and a minimum-health floor
 | `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone. |
 | `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
 | `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that do not count. |
-| `KEEP_INVENTORY` | `true` | Master switch for keeping items. |
+| `ENABLE_ITEM_KEEPING` | `true` | Master switch for keeping items. |
 | `KEEP_ARMOR` / `KEEP_HOTBAR` / `KEEP_MAINHAND` / `KEEP_OFFHAND` | `true` | Equipped slots. |
 | `KEEP_BAUBLES` | `true` | Baubles, and the Tool Belt with them. |
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents. |
@@ -92,7 +112,7 @@ Aliased to `/dov` and `/dp`.
 
 **If another mod already keeps items on death** - Corpse Complex, a gravestone mod - turn one of the two off. Two mods saving the same inventory can duplicate or lose items. This mod warns in the log if it detects one. Out of the box there is no clash: Corpse Complex ships with RLCraft but has its Inventory Module disabled.
 
-To hand item handling back to your pack entirely, set `KEEP_INVENTORY=false`.
+To hand item handling back to your pack entirely, set `ENABLE_ITEM_KEEPING=false`.
 
 **The vanilla `keepInventory` gamerule takes precedence.** With it on, this mod does not touch your inventory at all.
 
