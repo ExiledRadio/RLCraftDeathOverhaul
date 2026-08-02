@@ -71,6 +71,10 @@ Scaling Health already has flat per-death health loss and a minimum-health floor
 
 ![In-game config screen](https://media.forgecdn.net/attachments/1836/874/config-png.png)
 
+Settings are split into four groups.
+
+### hearts - what dying costs you in health
+
 | Setting | Default | Effect |
 |---|---|---|
 | `HEARTS_LOST_PER_PENALTY` | `1.0` | Hearts removed per penalty. Accepts halves. `0` disables health loss. |
@@ -78,20 +82,35 @@ Scaling Health already has flat per-death health loss and a minimum-health floor
 | `MIN_HEARTS` | `10.0` | Health floor. |
 | `RESET_COUNTER_ON_PENALTY` | `true` | Grace period repeats rather than being one-time. |
 | `RESET_COUNTER_ON_SLEEP` | `false` | Sleeping clears pending deaths. Does not refund hearts. |
-| `COUNT_CREATIVE_DEATHS` | `false` | Whether creative and spectator deaths count. |
-| `ANNOUNCE_PENALTY` | `true` | Chat message when charged. |
-| `ANNOUNCE_PROGRESS` | `true` | Chat message showing deaths remaining. |
-| `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone. |
-| `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
-| `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that do not count. |
+
+### items - what survives, and what keeping it costs
+
+| Setting | Default | Effect |
+|---|---|---|
 | `ENABLE_ITEM_KEEPING` | `true` | Master on/off for item handling. Does **not** mean "keep everything". |
-| `KEEP_ARMOR` / `KEEP_HOTBAR` / `KEEP_MAINHAND` / `KEEP_OFFHAND` | `true` | Equipped slots. |
+| `KEEP_ARMOR` / `KEEP_HOTBAR` / `KEEP_MAINHAND` / `KEEP_OFFHAND` | `true` | Your equipped slots. |
 | `KEEP_BAUBLES` | `true` | Baubles, and the Tool Belt with them. |
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents. |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots. This is the one you drop. |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it. |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
 | `NO_DROP_DESPAWN` | `true` | Dropped items never despawn. |
+
+### exemptions - deaths that do not count
+
+| Setting | Default | Effect |
+|---|---|---|
+| `COUNT_CREATIVE_DEATHS` | `false` | Whether creative and spectator deaths count. |
+| `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
+| `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that do not count. |
+
+### messages - what players are told
+
+| Setting | Default | Effect |
+|---|---|---|
+| `ANNOUNCE_PENALTY` | `true` | Chat message when charged. |
+| `ANNOUNCE_PROGRESS` | `true` | Chat message showing deaths remaining. |
+| `BROADCAST_PENALTY_TO_SERVER` | `false` | Announce penalties to everyone. |
 
 `EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name (`fall`, `lava`, `cactus`), not the death message in chat. Set your log level to debug and the mod prints the damage type of every death it sees.
 
