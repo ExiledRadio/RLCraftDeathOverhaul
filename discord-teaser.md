@@ -22,7 +22,7 @@ Dying in RLCraft costs you everything. Turning on `keepInventory` makes it cost 
 - Everything you kept takes 10% durability
 - You lose a heart of maximum health, permanently
 
-**The floor is the part I like.** It sits at 10 hearts — exactly what you start with. So the hearts you were born with can never be taken, only the ones you earned from heart containers.
+**The minimum is the part I like.** It sits at 10 hearts — exactly what you start with. So the hearts you were born with can never be taken, only the ones you earned from heart containers.
 
 Dying while you're still learning the pack costs you nothing. But every heart container you spend puts itself on the line, so using one stops being free and starts being a decision.
 

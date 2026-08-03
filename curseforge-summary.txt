@@ -1,1 +1,1 @@
-Death costs hearts, not your inventory. Keeps your gear, baubles and backpack, and your dropped items never despawn. Lost hearts lower your max health down to a floor you set, so only hearts you earned are at risk.
+Death costs hearts, not your inventory. Keeps your gear, baubles and backpack, and your dropped items never despawn. Lost hearts lower your max health down to a minimum you set, so only hearts you earned are at risk.

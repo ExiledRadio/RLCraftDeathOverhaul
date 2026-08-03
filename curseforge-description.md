@@ -2,7 +2,7 @@
 
 **Dying costs you hearts, not your whole inventory.**
 
-You keep your gear. You drop your loot, and it waits on the ground for you instead of despawning. Your maximum health drops by a heart, down to a floor you can never fall through.
+You keep your gear. You drop your loot, and it waits on the ground for you instead of despawning. Your maximum health drops by a heart, down to a minimum you can never fall below.
 
 Works out of the box. No config editing, no second mod to set up.
 
@@ -18,9 +18,9 @@ Works out of the box. No config editing, no second mod to set up.
 
 **Everything you kept takes 10% durability.** Walking away with your gear still costs repair materials. It can never break an item - anything that would be destroyed stops at 1 durability instead.
 
-**You lose a heart of maximum health.** Permanently, down to a floor. Hearts come back only through Scaling Health heart containers.
+**You lose a heart of maximum health.** Permanently, down to a minimum. Hearts come back only through Scaling Health heart containers.
 
-![Dying at the floor costs nothing](https://media.forgecdn.net/attachments/1836/873/deathmessage-png.png)
+![Dying at the minimum costs nothing](https://media.forgecdn.net/attachments/1836/873/deathmessage-png.png)
 
 ---
 
@@ -36,7 +36,7 @@ This mod is the middle setting the gamerule cannot express:
 | Main inventory | Kept | **Dropped** |
 | Items left on the ground | None | **Last 15 minutes, not 5** |
 | Durability cost | None | 10% on kept items |
-| Maximum health | Unchanged | **A heart, down to a floor** |
+| Maximum health | Unchanged | **A heart, down to a minimum** |
 
 You keep enough to survive the trip back, and lose enough to make the trip worth taking.
 
@@ -44,7 +44,7 @@ If you do want the gamerule, turn it on - this mod detects it and leaves your in
 
 ---
 
-## The heart floor
+## The health minimum
 
 `MIN_HEARTS` defaults to **10**, the same as Scaling Health's starting health.
 
@@ -59,11 +59,11 @@ If you change Scaling Health's `Starting Health`, change `MIN_HEARTS` to match.
 
 ## Paying in items when you run out of hearts
 
-There is a gap at the bottom of the range: once you are at the floor, a death costs nothing at all. No health left to take, and your gear is kept anyway.
+There is a gap at the bottom of the range: once you are at the minimum, a death costs nothing at all. No health left to take, and your gear is kept anyway.
 
 **`DROP_EVERYTHING_AT_MIN_HEALTH`** closes it. With it on, the trade runs both ways - hearts while you have them, your whole inventory once you do not. Death always costs something, and heart containers become the thing that buys your gear protection back.
 
-Off by default, and check `MIN_HEARTS` before turning it on. The floor defaults to 10, the same as Scaling Health's starting health, so a new player is standing on it from their first spawn and would drop everything on every death until their first heart container. If you want this on, set `MIN_HEARTS` below starting health so there is a buffer to spend first.
+Off by default, and check `MIN_HEARTS` before turning it on. The minimum defaults to 10, the same as Scaling Health's starting health, so a new player is standing on it from their first spawn and would drop everything on every death until their first heart container. If you want this on, set `MIN_HEARTS` below starting health so there is a buffer to spend first.
 
 Exempt deaths still cost nothing, items included.
 
@@ -73,7 +73,7 @@ Exempt deaths still cost nothing, items included.
 
 `DEATHS_PER_PENALTY` sets how many deaths it takes to be charged. Default `1`, so every death costs a heart. Set it to `3` and you get two free deaths before the third one bites.
 
-Scaling Health already has flat per-death health loss and a minimum-health floor. The grace period is the part it does not have, and the reason this mod exists rather than being a config change.
+Scaling Health already has flat per-death health loss and a minimum health setting. The grace period is the part it does not have, and the reason this mod exists rather than being a config change.
 
 ---
 
@@ -93,7 +93,7 @@ Settings are split into four groups.
 |---|---|---|
 | `HEARTS_LOST_PER_PENALTY` | `1.0` | Hearts removed per penalty. Accepts halves. `0` disables health loss. |
 | `DEATHS_PER_PENALTY` | `1` | Deaths needed to trigger a penalty. |
-| `MIN_HEARTS` | `10.0` | Health floor. |
+| `MIN_HEARTS` | `10.0` | Lowest your maximum health can go. |
 | `RESET_COUNTER_ON_PENALTY` | `true` | Grace period repeats rather than being one-time. |
 | `RESET_COUNTER_ON_SLEEP` | `false` | Sleeping clears pending deaths. Does not refund hearts. |
 
@@ -109,7 +109,7 @@ Settings are split into four groups.
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents. |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots. This is the one you drop. |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it. |
-| `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the floor, pay in items instead of hearts. |
+| `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the minimum, pay in items instead of hearts. |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
 | `DROP_DESPAWN_MINUTES` | `15` | How long death drops last. `0` leaves them alone, `-1` never despawns. |
 
@@ -141,7 +141,7 @@ Settings are split into four groups.
 
 | Command | Permission | Effect |
 |---|---|---|
-| `/deathoverhaul status` | anyone | Max health, floor, deaths banked, lifetime totals. |
+| `/deathoverhaul status` | anyone | Max health, minimum, deaths banked, lifetime totals. |
 | `/deathoverhaul status <player>` | op | Same, for another player. |
 | `/deathoverhaul reset <player>` | op | Clears counters. Does not refund hearts. |
 | `/deathoverhaul sethearts <player> <hearts>` | op | Sets max health. This is how you give hearts back. |

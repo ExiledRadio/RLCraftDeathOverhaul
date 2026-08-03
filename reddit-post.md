@@ -70,7 +70,7 @@ When you die, you keep your gear and lose a heart. Armour, hotbar, both hands, b
 ## Block 2
 
 ```
-The floor is the part I think actually makes it work. It sits at 10 hearts by default - exactly what Scaling Health starts you with. So the hearts you were born with can never be taken away. Only the ones you earned from heart containers are ever at risk.
+The minimum is the part I think actually makes it work. It sits at 10 hearts by default - exactly what Scaling Health starts you with. So the hearts you were born with can never be taken away. Only the ones you earned from heart containers are ever at risk.
 
 That does two things. Dying while you're still learning the pack costs you nothing at all, so a new player never gets dug into a hole they can't climb out of. And every heart container you find stops being a free upgrade, because spending one puts it permanently on the line. "Do I bank this now or hold it until I trust myself?" turned out to be a much more interesting question than I expected.
 
@@ -79,7 +79,7 @@ Your dropped items also never despawn. Vanilla deletes them after five minutes, 
 Everything you kept takes 10% durability, so walking away with your gear still costs you something. It can never break an item outright.
 ```
 
-**Format:** bold `The floor is the part I think actually makes it work.` and
+**Format:** bold `The minimum is the part I think actually makes it work.` and
 `Your dropped items also never despawn.`
 
 **Then insert:** `images/ConfigItems.png`
@@ -89,7 +89,7 @@ Everything you kept takes 10% durability, so walking away with your gear still c
 ## Block 3 — last one
 
 ```
-It's all configurable - 22 settings across four categories, read live so nothing needs a restart. The one I'd point at is DEATHS_PER_PENALTY: set it to 3 and you get two free deaths before the third one takes a heart. Scaling Health already does flat per-death health loss and a minimum health floor, but it has no concept of a grace period, and that's genuinely the reason this exists as a mod rather than a config change.
+It's all configurable - 22 settings across four categories, read live so nothing needs a restart. The one I'd point at is DEATHS_PER_PENALTY: set it to 3 and you get two free deaths before the third one takes a heart. Scaling Health already does flat per-death health loss and a minimum health setting, but it has no concept of a grace period, and that's genuinely the reason this exists as a mod rather than a config change.
 
 You can also exempt whole dimensions or specific damage types, turn the item keeping off entirely if you'd rather Corpse Complex handled it, or leave keepInventory on - the mod detects it and won't touch your inventory.
 
@@ -99,7 +99,7 @@ CurseForge: https://www.curseforge.com/minecraft/mc-mods/rlcraft-death-overhaul
 
 Source (MIT): https://github.com/ExiledRadio/RLCraftDeathOverhaul
 
-I've tuned the defaults against my own playthrough, which is a sample size of one. If the heart cost feels wrong, or the floor is in the wrong place, or dropping your main inventory is too harsh or not harsh enough, tell me - those are exactly the numbers I'd like other opinions on.
+I've tuned the defaults against my own playthrough, which is a sample size of one. If the heart cost feels wrong, or the minimum is in the wrong place, or dropping your main inventory is too harsh or not harsh enough, tell me - those are exactly the numbers I'd like other opinions on.
 ```
 
 **Format:** bold `CurseForge:` and `Source (MIT):`. The editor turns both URLs into links on

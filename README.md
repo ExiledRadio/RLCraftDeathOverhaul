@@ -14,9 +14,9 @@ Built for RLCraft and RLCraft Dregora, but nothing in it is pack-specific.
 | **Dropped** | Your main inventory — the 27 non-hotbar slots |
 | **Drops last 15 minutes** | Vanilla gives you 5. Configurable, `-1` for never |
 | **Durability** | 10% off every damageable item you kept. Never breaks anything — stops at 1 durability |
-| **Health** | One heart off your max, down to a floor. Recovered only via heart containers |
+| **Health** | One heart off your max, down to a minimum. Recovered only via heart containers |
 
-## The heart floor
+## The health minimum
 
 `MIN_HEARTS` defaults to `10`, matching Scaling Health's `Starting Health`. So the hearts
 you start with can never be taken, and only hearts you added with heart containers are at
@@ -29,7 +29,7 @@ If you change Scaling Health's `Starting Health`, change `MIN_HEARTS` to match.
 `DEATHS_PER_PENALTY` sets how many deaths it takes to be charged. Default `1`. Set it to
 `3` for two free deaths before the third takes a heart.
 
-Scaling Health already has flat per-death health loss and a health floor. The grace period
+Scaling Health already has flat per-death health loss and a health minimum. The grace period
 is the part it lacks — and the reason this mod exists rather than being a config change.
 
 ## Settings
@@ -47,7 +47,7 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 |---|---|---|
 | `HEARTS_LOST_PER_PENALTY` | `1.0` | Hearts per penalty. Accepts halves. `0` disables health loss |
 | `DEATHS_PER_PENALTY` | `1` | Deaths needed to trigger a penalty |
-| `MIN_HEARTS` | `10.0` | Health floor |
+| `MIN_HEARTS` | `10.0` | Lowest your max health can go |
 | `RESET_COUNTER_ON_PENALTY` | `true` | Grace period repeats rather than being one-time |
 | `RESET_COUNTER_ON_SLEEP` | `false` | Sleeping clears pending deaths. Does not refund hearts |
 
@@ -63,7 +63,7 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots — the one you drop |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it |
-| `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the floor, pay in items instead. See below |
+| `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the minimum, pay in items instead. See below |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items |
 | `DROP_DESPAWN_MINUTES` | `15` | Death drop lifetime. `0` leaves them alone, `-1` never despawns |
 
@@ -86,16 +86,16 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 `EXEMPT_DAMAGE_TYPES` matches Minecraft's internal damage name (`fall`, `lava`, `cactus`),
 not the chat death message. Set the log to debug and every death is logged with its type.
 
-![Dying at the floor costs nothing](images/DeathMessage.png)
+![Dying at the minimum costs nothing](images/DeathMessage.png)
 
 ## Paying in items when you're out of hearts
 
 `DROP_EVERYTHING_AT_MIN_HEALTH` (off by default) closes the gap at the bottom of the
-range. Normally a death at the floor costs nothing at all — there's no health left to
+range. Normally a death at the minimum costs nothing at all — there's no health left to
 take, and your gear is kept regardless. Turn it on and the trade runs both ways: hearts
 while you have them, items once you don't. Death always costs something.
 
-**Check `MIN_HEARTS` before enabling it.** The floor defaults to 10, the same as Scaling
+**Check `MIN_HEARTS` before enabling it.** The minimum defaults to 10, the same as Scaling
 Health's starting health, so a new player stands on it from their first spawn — they'd
 drop everything on every death until their first heart container. If you want this on,
 set `MIN_HEARTS` below starting health so there's a buffer to spend first.
@@ -106,7 +106,7 @@ Exempt deaths still cost nothing, items included.
 
 | Command | Permission | Effect |
 |---|---|---|
-| `/deathoverhaul status` | anyone | Max health, floor, deaths banked, lifetime totals |
+| `/deathoverhaul status` | anyone | Max health, minimum, deaths banked, lifetime totals |
 | `/deathoverhaul status <player>` | op | Same, for another player |
 | `/deathoverhaul reset <player>` | op | Clears counters. Does not refund hearts |
 | `/deathoverhaul sethearts <player> <hearts>` | op | Sets max health. How you give hearts back |
