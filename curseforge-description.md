@@ -71,12 +71,9 @@ Scaling Health already has flat per-death health loss and a minimum-health floor
 
 Settings are split into four groups.
 
-<!-- IMAGE: the old config-png.png attachment shows the previous flat list and is now
-     out of date. Upload images/ConfigCategory.png and paste its URL here instead. -->
+![The four config groups](https://media.forgecdn.net/attachments/1838/154/configcategory-png.png)
 
-<!-- OPTIONAL: images/ConfigItems.png, ConfigHearts.png and ConfigExemptions.png show the
-     individual groups if you want one under each table below. -->
-
+*Four groups, all editable in-game and read live.*
 
 ### hearts - what dying costs you in health
 
@@ -87,6 +84,8 @@ Settings are split into four groups.
 | `MIN_HEARTS` | `10.0` | Health floor. |
 | `RESET_COUNTER_ON_PENALTY` | `true` | Grace period repeats rather than being one-time. |
 | `RESET_COUNTER_ON_SLEEP` | `false` | Sleeping clears pending deaths. Does not refund hearts. |
+
+![The hearts config group](https://media.forgecdn.net/attachments/1838/152/confighearts-png.png)
 
 ### items - what survives, and what keeping it costs
 
@@ -101,6 +100,8 @@ Settings are split into four groups.
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
 | `NO_DROP_DESPAWN` | `true` | Dropped items never despawn. |
 
+![The items config group](https://media.forgecdn.net/attachments/1838/153/configitems-png.png)
+
 ### exemptions - deaths that do not count
 
 | Setting | Default | Effect |
@@ -108,6 +109,8 @@ Settings are split into four groups.
 | `COUNT_CREATIVE_DEATHS` | `false` | Whether creative and spectator deaths count. |
 | `EXEMPT_DIMENSIONS` | *(empty)* | Dimension IDs where dying is free. |
 | `EXEMPT_DAMAGE_TYPES` | *(empty)* | Damage types that do not count. |
+
+![The exemptions config group](https://media.forgecdn.net/attachments/1838/155/configexemptions-png.png)
 
 ### messages - what players are told
 
