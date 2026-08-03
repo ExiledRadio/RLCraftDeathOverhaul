@@ -90,17 +90,34 @@ public class InventoryKeepHandler {
             DeathPenaltyData.setKeptItems(player, kept);
         }
 
-        if (ModConfig.KEEP_BAUBLES && Loader.isModLoaded(MODID_BAUBLES)) {
-            NBTTagList baubles = BaublesCompat.stash(player);
-            if (baubles.tagCount() > 0) {
-                DeathPenaltyData.setKeptBaubles(player, baubles);
-            }
-        }
-
+        // The backpack MUST come before the baubles, not after.
+        //
+        // Wearable Backpacks tracks the equipped backpack in an IBackpack capability, and
+        // in RLCraft it is worn in a Baubles slot ("Equip Backpack as Bauble"), so the
+        // item lives in the Baubles inventory while the capability holds the stack and,
+        // crucially, the contents. Emptying the Baubles slot first leaves the capability
+        // pointing at a backpack that is no longer worn — the state its own
+        // onLivingUpdate treats as a faulty removal — and the contents go with it.
+        // Reading and clearing the capability first means Wearable Backpacks has nothing
+        // left to react to by the time the Baubles slot is touched.
         if (ModConfig.KEEP_WEARABLE_BACKPACK && Loader.isModLoaded(MODID_BACKPACKS)) {
             NBTTagCompound backpack = BackpackCompat.stash(player);
             if (backpack != null) {
                 DeathPenaltyData.setKeptBackpack(player, backpack);
+                RLCraftDeathOverhaul.LOGGER.debug("Saved {}'s equipped backpack and its contents",
+                        player.getName());
+            } else {
+                RLCraftDeathOverhaul.LOGGER.debug(
+                        "{} had no equipped backpack to save - if they were wearing one, its "
+                                + "contents are handled by whatever holds the item instead",
+                        player.getName());
+            }
+        }
+
+        if (ModConfig.KEEP_BAUBLES && Loader.isModLoaded(MODID_BAUBLES)) {
+            NBTTagList baubles = BaublesCompat.stash(player);
+            if (baubles.tagCount() > 0) {
+                DeathPenaltyData.setKeptBaubles(player, baubles);
             }
         }
 
@@ -215,6 +232,10 @@ public class InventoryKeepHandler {
             any = true;
         }
 
+        // Mirror of the death order: the Baubles slot is filled first, then the
+        // capability is pointed at it. Doing it the other way round would leave the
+        // capability referencing a backpack that is not in any slot yet, which is the
+        // state Wearable Backpacks tears down as a faulty removal.
         if (DeathPenaltyData.hasKeptBackpack(player) && Loader.isModLoaded(MODID_BACKPACKS)) {
             BackpackCompat.restore(player, DeathPenaltyData.getKeptBackpack(player));
             any = true;
