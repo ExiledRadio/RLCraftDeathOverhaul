@@ -54,7 +54,7 @@ before this commit.
 ## Block 1
 
 ```
-Every RLCraft run I've had hits the same fork. Either you die in lava and lose four hours of progress, or you turn on keepInventory and a week later you're charging into structures with no plan at all, because dying just means respawning outside with all your loot still on you. I've played it both ways and I didn't enjoy either.
+Every RLCraft run I've had hits the same fork. Either you die in lava and lose four hours of progress, or you turn on keepInventory. A week later you're charging head first into any structure you stumble across, knowing you'll respawn at the bed you left outside with all your loot. I've played it both ways and I didn't enjoy either.
 
 So I made the setting in between.
 
