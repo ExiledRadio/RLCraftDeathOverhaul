@@ -11,8 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -51,9 +49,6 @@ public class InventoryKeepHandler {
 
     private static final int TICKS_PER_MINUTE = 20 * 60;
 
-    private static final String PREFIX =
-            TextFormatting.DARK_RED + "[Death Overhaul] " + TextFormatting.RESET;
-
     private static final String NBT_LIST = "List";
     private static final String NBT_SLOT = "Slot";
     private static final String NBT_ITEM = "Item";
@@ -78,7 +73,8 @@ public class InventoryKeepHandler {
         // must not charge items either.
         if (ModConfig.DROP_EVERYTHING_AT_MIN_HEALTH
                 && DeathPenaltyHandler.isAtHealthFloor(player)
-                && DeathPenaltyHandler.countsAsPenaltyDeath(player, event.getSource())) {
+                && DeathPenaltyHandler.countsAsPenaltyDeath(player, event.getSource())
+                && DeathPenaltyHandler.willChargeThisDeath(player)) {
             DeathPenaltyData.setDroppedEverything(player, true);
             RLCraftDeathOverhaul.LOGGER.debug(
                     "{} died at the health floor - dropping everything", player.getName());
@@ -232,16 +228,9 @@ public class InventoryKeepHandler {
             any = true;
         }
 
-        // Say why the gear is gone. Without this it reads as the mod failing rather than
-        // the mod charging them, which is the same confusion an unexplained exempt death
-        // causes.
-        if (DeathPenaltyData.didDropEverything(player) && ModConfig.ANNOUNCE_PENALTY
-                && player instanceof EntityPlayerMP) {
-            player.sendMessage(new TextComponentString(PREFIX + TextFormatting.RED
-                    + "You had no hearts left to lose, so this death cost you everything. "
-                    + TextFormatting.GRAY + "Raise your maximum health to protect your gear again."));
-        }
-
+        // Why the gear is gone is announced by DeathPenaltyHandler, which runs after this
+        // and owns every penalty message, so the player cannot be told two different
+        // things about the same death. The flag it reads is cleared there too.
         DeathPenaltyData.clearKept(player);
 
         if (any && player instanceof EntityPlayerMP) {

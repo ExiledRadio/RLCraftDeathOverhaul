@@ -100,7 +100,8 @@ Health's starting health, so a new player stands on it from their first spawn â€
 drop everything on every death until their first heart container. If you want this on,
 set `MIN_HEARTS` below starting health so there's a buffer to spend first.
 
-Exempt deaths still cost nothing, items included.
+A death that charges no hearts doesn't charge items either â€” exempt deaths and the free
+ones inside a `DEATHS_PER_PENALTY` grace period both leave your inventory alone.
 
 ## Commands
 

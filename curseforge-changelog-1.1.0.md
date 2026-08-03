@@ -25,7 +25,7 @@ There was a gap at the bottom of the range: once you were at the `MIN_HEARTS` mi
 
 **Check `MIN_HEARTS` before turning it on.** The minimum defaults to 10, matching Scaling Health's starting health, so a new player stands on it from their first spawn and would drop everything on every death until their first heart container. Set `MIN_HEARTS` below starting health if you want a buffer to spend first.
 
-Exempt deaths still cost nothing, items included — a death that charges no hearts doesn't charge items either. You're told in chat when a death costs you everything, so it doesn't look like the mod failing.
+A death that charges no hearts doesn't charge items either, so exempt deaths and free deaths inside a `DEATHS_PER_PENALTY` grace period both leave your inventory alone. You're told in chat when a death costs you everything, so it doesn't read as the mod failing.
 
 ## Fixed
 

@@ -165,7 +165,13 @@ public final class DeathPenaltyData {
         ours.removeTag(KEY_KEPT_BAUBLES);
         ours.removeTag(KEY_KEPT_BACKPACK);
         ours.removeTag(KEY_KEPT_XP);
-        ours.removeTag(KEY_DROPPED_EVERYTHING);
+        // Deliberately not KEY_DROPPED_EVERYTHING: InventoryKeepHandler calls this at
+        // NORMAL priority on respawn, and DeathPenaltyHandler still needs the flag at
+        // LOWEST to word the message. It clears the flag itself once it has.
+    }
+
+    public static void clearDroppedEverything(EntityPlayer player) {
+        root(player).removeTag(KEY_DROPPED_EVERYTHING);
     }
 
     /** Clears the ledger. Used by {@code /deathoverhaul reset}. */

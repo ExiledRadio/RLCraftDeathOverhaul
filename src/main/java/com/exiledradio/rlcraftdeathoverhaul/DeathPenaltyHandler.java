@@ -115,6 +115,20 @@ public class DeathPenaltyHandler {
     }
 
     /**
+     * Whether this death is the one that gets charged, asked while the counter has not
+     * been incremented for it yet.
+     *
+     * <p>{@link InventoryKeepHandler} runs at {@code HIGHEST} and this handler at
+     * {@code LOWEST}, so at the moment the item decision is made the increment has not
+     * happened — hence the {@code + 1}. Without this, a grace period would apply to
+     * hearts but not to items, and a death advertised as free would still empty your
+     * inventory.
+     */
+    public static boolean willChargeThisDeath(EntityPlayer player) {
+        return DeathPenaltyData.getDeathsSincePenalty(player) + 1 >= ModConfig.DEATHS_PER_PENALTY;
+    }
+
+    /**
      * True when the player has no health left to pay with — their maximum is already at
      * or below the floor, so a penalty would take nothing.
      */
@@ -182,6 +196,9 @@ public class DeathPenaltyHandler {
         if (applyPenalty(player, baselineHp, currentMaxHp) && ModConfig.RESET_COUNTER_ON_PENALTY) {
             DeathPenaltyData.setDeathsSincePenalty(player, 0);
         }
+
+        // Consumed last, once the message that depends on it has been sent.
+        DeathPenaltyData.clearDroppedEverything(player);
     }
 
     /**
@@ -281,6 +298,18 @@ public class DeathPenaltyHandler {
     private static void announcePenalty(EntityPlayer player, float actualLossHp,
                                         float targetHp, float minHp) {
         if (!ModConfig.ANNOUNCE_PENALTY) {
+            return;
+        }
+
+        // Charged in items rather than hearts, so "cost you nothing" would be a lie.
+        // Announced from here rather than from InventoryKeepHandler because that runs at
+        // NORMAL priority and this at LOWEST — messaging from both produced two
+        // contradictory lines, one after the other.
+        if (DeathPenaltyData.didDropEverything(player)) {
+            send(player, new TextComponentString(PREFIX + TextFormatting.RED
+                    + "You had no hearts left to lose, so this death cost you everything you "
+                    + "were carrying. " + TextFormatting.GRAY
+                    + "Raise your maximum health to protect your gear again."));
             return;
         }
 
