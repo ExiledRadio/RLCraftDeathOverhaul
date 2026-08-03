@@ -54,7 +54,7 @@ before this commit.
 ## Block 1
 
 ```
-Every RLCraft run I've had ends up at the same fork. Either you die in a lava lake you can't get back to and lose four hours of progress, or you turn on keepInventory and within a week death means nothing and you're jumping off cliffs as a fast travel system. I've played it both ways and I didn't enjoy either.
+Every RLCraft run I've had hits the same fork. Either you die in lava and lose four hours of progress, or you turn on keepInventory and a week later you're charging into structures with no plan at all, because dying just means respawning outside with all your loot still on you. I've played it both ways and I didn't enjoy either.
 
 So I made the setting in between.
 

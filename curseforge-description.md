@@ -113,7 +113,7 @@ Settings are split into four groups.
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
 | `DROP_DESPAWN_MINUTES` | `15` | How long death drops last. `0` leaves them alone, `-1` never despawns. |
 
-![The items config group](https://media.forgecdn.net/attachments/1838/153/configitems-png.png)
+![The items config group](https://media.forgecdn.net/attachments/1841/85/image_2026-08-03_133739623-png.png)
 
 ### exemptions - deaths that do not count
 
