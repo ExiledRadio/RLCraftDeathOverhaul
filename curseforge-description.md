@@ -142,9 +142,9 @@ Settings are split into four groups.
 | Command | Permission | Effect |
 |---|---|---|
 | `/deathoverhaul status` | anyone | Max health, minimum, deaths banked, lifetime totals. |
-| `/deathoverhaul status <player>` | op | Same, for another player. |
-| `/deathoverhaul reset <player>` | op | Clears counters. Does not refund hearts. |
-| `/deathoverhaul sethearts <player> <hearts>` | op | Sets max health. This is how you give hearts back. |
+| `/deathoverhaul status Steve` | op | Same, for another player. |
+| `/deathoverhaul reset Steve` | op | Clears counters. Does not refund hearts. |
+| `/deathoverhaul sethearts Steve 12` | op | Sets max health, here to 12 hearts. This is how you give hearts back. |
 
 Aliased to `/dov` and `/dp`.
 
