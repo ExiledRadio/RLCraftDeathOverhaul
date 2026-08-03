@@ -61,6 +61,27 @@ public class ModConfig {
     private static final List<String> ORDER_MESSAGES = Arrays.asList(
             "ANNOUNCE_PENALTY", "ANNOUNCE_PROGRESS", "BROADCAST_PENALTY_TO_SERVER");
 
+    /**
+     * Hands Forge its own mutable copy of an order list.
+     *
+     * <p>{@code ConfigCategory.setPropertyOrder} keeps the list it is given and then
+     * appends any property already in the category that the list does not mention:
+     *
+     * <pre>
+     *   this.propertyOrder = propOrder;
+     *   for (String s : properties.keySet())
+     *       if (!propOrder.contains(s)) propOrder.add(s);
+     * </pre>
+     *
+     * <p>So the list has to be growable — {@code Arrays.asList} is fixed-size and throws
+     * {@code UnsupportedOperationException} the moment a stale key exists in someone's
+     * config. It also has to be a copy, or Forge would append into the shared constants
+     * below and corrupt the key-to-category map they feed.
+     */
+    private static List<String> mutableOrder(List<String> order) {
+        return new ArrayList<String>(order);
+    }
+
     /** Which category each setting belongs to, used to move settings out of the old block. */
     private static final Map<String, String> CATEGORY_OF_KEY = new HashMap<String, String>();
 
@@ -122,13 +143,16 @@ public class ModConfig {
     public static void loadConfig() {
         migrateLegacyCategory();
         migrateDropDespawn();
+        // Must run before the loaders: they call setCategoryPropertyOrder, which appends
+        // any key the order list does not mention, and a stale key reaching that point is
+        // what crashed 1.1.0 on startup.
+        pruneUnknownKeys();
 
         loadHearts();
         loadItems();
         loadExemptions();
         loadMessages();
 
-        pruneUnknownKeys();
         clampAndDerive();
 
         if (config.hasChanged()) {
@@ -246,7 +270,7 @@ public class ModConfig {
         config.setCategoryComment(CATEGORY_HEARTS,
                 "What dying costs you in health.\n"
                         + "All values are in whole hearts: 1.0 is a full heart, 0.5 is a half.");
-        config.setCategoryPropertyOrder(CATEGORY_HEARTS, ORDER_HEARTS);
+        config.setCategoryPropertyOrder(CATEGORY_HEARTS, mutableOrder(ORDER_HEARTS));
 
         HEARTS_LOST_PER_PENALTY = config.getFloat(
                 "HEARTS_LOST_PER_PENALTY", CATEGORY_HEARTS, 1.0F, 0.0F, 100.0F,
@@ -317,7 +341,7 @@ public class ModConfig {
                         + "\n"
                         + "The vanilla keepInventory gamerule always takes precedence over everything\n"
                         + "in this category. With it on, this mod does not touch your inventory.");
-        config.setCategoryPropertyOrder(CATEGORY_ITEMS, ORDER_ITEMS);
+        config.setCategoryPropertyOrder(CATEGORY_ITEMS, mutableOrder(ORDER_ITEMS));
 
         ENABLE_ITEM_KEEPING = config.getBoolean(
                 "ENABLE_ITEM_KEEPING", CATEGORY_ITEMS, true,
@@ -430,7 +454,7 @@ public class ModConfig {
         config.setCategoryComment(CATEGORY_EXEMPTIONS,
                 "Deaths that do not count at all.\n"
                         + "An exempt death never increments the counter and never costs hearts.");
-        config.setCategoryPropertyOrder(CATEGORY_EXEMPTIONS, ORDER_EXEMPTIONS);
+        config.setCategoryPropertyOrder(CATEGORY_EXEMPTIONS, mutableOrder(ORDER_EXEMPTIONS));
 
         COUNT_CREATIVE_DEATHS = config.getBoolean(
                 "COUNT_CREATIVE_DEATHS", CATEGORY_EXEMPTIONS, false,
@@ -466,7 +490,7 @@ public class ModConfig {
     private static void loadMessages() {
         config.setCategoryComment(CATEGORY_MESSAGES,
                 "What the mod tells players in chat.");
-        config.setCategoryPropertyOrder(CATEGORY_MESSAGES, ORDER_MESSAGES);
+        config.setCategoryPropertyOrder(CATEGORY_MESSAGES, mutableOrder(ORDER_MESSAGES));
 
         ANNOUNCE_PENALTY = config.getBoolean(
                 "ANNOUNCE_PENALTY", CATEGORY_MESSAGES, true,
