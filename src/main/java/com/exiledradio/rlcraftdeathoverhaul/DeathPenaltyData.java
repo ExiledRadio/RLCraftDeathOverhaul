@@ -144,6 +144,20 @@ public final class DeathPenaltyData {
         return root(player).hasKey(KEY_KEPT_XP);
     }
 
+    /**
+     * Set when a death cost the player everything because they had no health left to
+     * pay with, so the respawn can explain why rather than leaving them to guess.
+     */
+    private static final String KEY_DROPPED_EVERYTHING = "droppedEverything";
+
+    public static void setDroppedEverything(EntityPlayer player, boolean value) {
+        root(player).setBoolean(KEY_DROPPED_EVERYTHING, value);
+    }
+
+    public static boolean didDropEverything(EntityPlayer player) {
+        return root(player).getBoolean(KEY_DROPPED_EVERYTHING);
+    }
+
     /** Wipes every stash key at once, once the contents have been handed back. */
     public static void clearKept(EntityPlayer player) {
         NBTTagCompound ours = root(player);
@@ -151,6 +165,7 @@ public final class DeathPenaltyData {
         ours.removeTag(KEY_KEPT_BAUBLES);
         ours.removeTag(KEY_KEPT_BACKPACK);
         ours.removeTag(KEY_KEPT_XP);
+        ours.removeTag(KEY_DROPPED_EVERYTHING);
     }
 
     /** Clears the ledger. Used by {@code /deathoverhaul reset}. */

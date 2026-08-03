@@ -52,7 +52,7 @@ public class ModConfig {
     private static final List<String> ORDER_ITEMS = Arrays.asList(
             "ENABLE_ITEM_KEEPING", "KEEP_ARMOR", "KEEP_HOTBAR", "KEEP_MAINHAND",
             "KEEP_OFFHAND", "KEEP_BAUBLES", "KEEP_WEARABLE_BACKPACK",
-            "KEEP_MAIN_INVENTORY", "KEEP_XP",
+            "KEEP_MAIN_INVENTORY", "KEEP_XP", "DROP_EVERYTHING_AT_MIN_HEALTH",
             "DURABILITY_LOSS_ON_KEPT_ITEMS", "DROP_DESPAWN_MINUTES");
 
     private static final List<String> ORDER_EXEMPTIONS = Arrays.asList(
@@ -114,6 +114,7 @@ public class ModConfig {
     public static boolean KEEP_BAUBLES = true;
     public static boolean KEEP_WEARABLE_BACKPACK = true;
     public static boolean KEEP_XP = false;
+    public static boolean DROP_EVERYTHING_AT_MIN_HEALTH = false;
     public static float DURABILITY_LOSS_ON_KEPT_ITEMS = 0.10F;
     public static int DROP_DESPAWN_MINUTES = 15;
 
@@ -417,6 +418,26 @@ public class ModConfig {
                 "Keep your experience on death instead of dropping it.\n"
                         + "OFF by default: losing levels is a normal part of dying, and RLCraft's own\n"
                         + "Corpse Complex already lets you recover some of it."
+        );
+
+        DROP_EVERYTHING_AT_MIN_HEALTH = config.getBoolean(
+                "DROP_EVERYTHING_AT_MIN_HEALTH", CATEGORY_ITEMS, false,
+                "Drop everything, gear included, when you have no health left to pay with.\n"
+                        + "\n"
+                        + "Normally a death at the MIN_HEARTS floor costs nothing at all - there is no\n"
+                        + "health left to take and your gear is kept anyway. Turn this on and the trade\n"
+                        + "runs both ways: while you have hearts above the floor you pay in hearts and\n"
+                        + "keep your gear, and once you are down to the floor you pay in items instead.\n"
+                        + "Death always costs you something.\n"
+                        + "\n"
+                        + "OFF by default, and think about MIN_HEARTS before turning it on. The floor\n"
+                        + "defaults to 10 hearts, the same as Scaling Health's starting health, so a\n"
+                        + "new player is standing on it from their first spawn - they would drop\n"
+                        + "everything on every death until their first heart container. If you want\n"
+                        + "this on, set MIN_HEARTS below starting health so there is a buffer to spend\n"
+                        + "first, or accept that early deaths cost a full inventory.\n"
+                        + "\n"
+                        + "Deaths that are exempt still cost nothing, items included."
         );
 
         DURABILITY_LOSS_ON_KEPT_ITEMS = config.getFloat(

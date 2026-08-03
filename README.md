@@ -63,6 +63,7 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots — the one you drop |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it |
+| `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the floor, pay in items instead. See below |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items |
 | `DROP_DESPAWN_MINUTES` | `15` | Death drop lifetime. `0` leaves them alone, `-1` never despawns |
 
@@ -86,6 +87,20 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 not the chat death message. Set the log to debug and every death is logged with its type.
 
 ![Dying at the floor costs nothing](images/DeathMessage.png)
+
+## Paying in items when you're out of hearts
+
+`DROP_EVERYTHING_AT_MIN_HEALTH` (off by default) closes the gap at the bottom of the
+range. Normally a death at the floor costs nothing at all — there's no health left to
+take, and your gear is kept regardless. Turn it on and the trade runs both ways: hearts
+while you have them, items once you don't. Death always costs something.
+
+**Check `MIN_HEARTS` before enabling it.** The floor defaults to 10, the same as Scaling
+Health's starting health, so a new player stands on it from their first spawn — they'd
+drop everything on every death until their first heart container. If you want this on,
+set `MIN_HEARTS` below starting health so there's a buffer to spend first.
+
+Exempt deaths still cost nothing, items included.
 
 ## Commands
 

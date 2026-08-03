@@ -2,6 +2,7 @@ package com.exiledradio.rlcraftdeathoverhaul;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -67,23 +68,7 @@ public class DeathPenaltyHandler {
             return;
         }
 
-        String damageType = event.getSource() == null ? "unknown" : event.getSource().getDamageType();
-        int dimension = player.world.provider.getDimension();
-        RLCraftDeathOverhaul.LOGGER.debug("{} died - damage type '{}', dimension {}",
-                player.getName(), damageType, dimension);
-
-        if (!ModConfig.COUNT_CREATIVE_DEATHS && (player.isCreative() || player.isSpectator())) {
-            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: creative/spectator", player.getName());
-            return;
-        }
-        if (ModConfig.isDimensionExempt(dimension)) {
-            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: dimension {} is exempt",
-                    player.getName(), dimension);
-            return;
-        }
-        if (ModConfig.isDamageTypeExempt(damageType)) {
-            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: damage type '{}' is exempt",
-                    player.getName(), damageType);
+        if (!countsAsPenaltyDeath(player, event.getSource())) {
             return;
         }
 
@@ -92,6 +77,50 @@ public class DeathPenaltyHandler {
         DeathPenaltyData.setDeathPending(player, true);
         RLCraftDeathOverhaul.LOGGER.debug("{} now has {} death(s) toward a penalty of {}",
                 player.getName(), deaths, ModConfig.DEATHS_PER_PENALTY);
+    }
+
+    /**
+     * Whether a death should cost the player anything at all.
+     *
+     * <p>Shared with {@link InventoryKeepHandler} rather than duplicated, because
+     * DROP_EVERYTHING_AT_MIN_HEALTH decides what happens to items using the same answer.
+     * A death that costs no hearts because it was exempt must not cost items either —
+     * there is nothing being traded, so nothing should be charged on either side.
+     *
+     * <p>Written as a pure function of the player and damage source so the two handlers
+     * can call it from opposite event priorities and still agree.
+     */
+    public static boolean countsAsPenaltyDeath(EntityPlayer player, DamageSource source) {
+        String damageType = source == null ? "unknown" : source.getDamageType();
+        int dimension = player.world.provider.getDimension();
+        RLCraftDeathOverhaul.LOGGER.debug("{} died - damage type '{}', dimension {}",
+                player.getName(), damageType, dimension);
+
+        if (!ModConfig.COUNT_CREATIVE_DEATHS && (player.isCreative() || player.isSpectator())) {
+            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: creative/spectator",
+                    player.getName());
+            return false;
+        }
+        if (ModConfig.isDimensionExempt(dimension)) {
+            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: dimension {} is exempt",
+                    player.getName(), dimension);
+            return false;
+        }
+        if (ModConfig.isDamageTypeExempt(damageType)) {
+            RLCraftDeathOverhaul.LOGGER.debug("Ignoring death of {}: damage type '{}' is exempt",
+                    player.getName(), damageType);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * True when the player has no health left to pay with — their maximum is already at
+     * or below the floor, so a penalty would take nothing.
+     */
+    public static boolean isAtHealthFloor(EntityPlayer player) {
+        float maxHp = ScalingHealthBridge.getMaxHealth(player);
+        return maxHp >= 0.0F && maxHp <= ModConfig.getMinHealthHp() + 0.001F;
     }
 
     // ------------------------------------------------------------------

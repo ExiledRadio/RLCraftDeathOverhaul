@@ -57,6 +57,18 @@ If you change Scaling Health's `Starting Health`, change `MIN_HEARTS` to match.
 
 ---
 
+## Paying in items when you run out of hearts
+
+There is a gap at the bottom of the range: once you are at the floor, a death costs nothing at all. No health left to take, and your gear is kept anyway.
+
+**`DROP_EVERYTHING_AT_MIN_HEALTH`** closes it. With it on, the trade runs both ways - hearts while you have them, your whole inventory once you do not. Death always costs something, and heart containers become the thing that buys your gear protection back.
+
+Off by default, and check `MIN_HEARTS` before turning it on. The floor defaults to 10, the same as Scaling Health's starting health, so a new player is standing on it from their first spawn and would drop everything on every death until their first heart container. If you want this on, set `MIN_HEARTS` below starting health so there is a buffer to spend first.
+
+Exempt deaths still cost nothing, items included.
+
+---
+
 ## Grace period
 
 `DEATHS_PER_PENALTY` sets how many deaths it takes to be charged. Default `1`, so every death costs a heart. Set it to `3` and you get two free deaths before the third one bites.
@@ -97,6 +109,7 @@ Settings are split into four groups.
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents. |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots. This is the one you drop. |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it. |
+| `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the floor, pay in items instead of hearts. |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
 | `DROP_DESPAWN_MINUTES` | `15` | How long death drops last. `0` leaves them alone, `-1` never despawns. |
 

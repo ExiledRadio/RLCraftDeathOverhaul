@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -49,6 +51,9 @@ public class InventoryKeepHandler {
 
     private static final int TICKS_PER_MINUTE = 20 * 60;
 
+    private static final String PREFIX =
+            TextFormatting.DARK_RED + "[Death Overhaul] " + TextFormatting.RESET;
+
     private static final String NBT_LIST = "List";
     private static final String NBT_SLOT = "Slot";
     private static final String NBT_ITEM = "Item";
@@ -64,6 +69,19 @@ public class InventoryKeepHandler {
         }
         EntityPlayer player = (EntityPlayer) event.getEntity();
         if (player.world.isRemote || !isEligible(player)) {
+            return;
+        }
+
+        // No health left to pay with, so the bill is settled in items instead. Keeping
+        // nothing here means vanilla drops the lot, exactly as if the mod were absent.
+        // Gated on the death actually counting: an exempt death charges no hearts, so it
+        // must not charge items either.
+        if (ModConfig.DROP_EVERYTHING_AT_MIN_HEALTH
+                && DeathPenaltyHandler.isAtHealthFloor(player)
+                && DeathPenaltyHandler.countsAsPenaltyDeath(player, event.getSource())) {
+            DeathPenaltyData.setDroppedEverything(player, true);
+            RLCraftDeathOverhaul.LOGGER.debug(
+                    "{} died at the health floor - dropping everything", player.getName());
             return;
         }
 
@@ -212,6 +230,16 @@ public class InventoryKeepHandler {
                 player.addExperience(xp);
             }
             any = true;
+        }
+
+        // Say why the gear is gone. Without this it reads as the mod failing rather than
+        // the mod charging them, which is the same confusion an unexplained exempt death
+        // causes.
+        if (DeathPenaltyData.didDropEverything(player) && ModConfig.ANNOUNCE_PENALTY
+                && player instanceof EntityPlayerMP) {
+            player.sendMessage(new TextComponentString(PREFIX + TextFormatting.RED
+                    + "You had no hearts left to lose, so this death cost you everything. "
+                    + TextFormatting.GRAY + "Raise your maximum health to protect your gear again."));
         }
 
         DeathPenaltyData.clearKept(player);
