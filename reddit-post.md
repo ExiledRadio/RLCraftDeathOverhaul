@@ -1,4 +1,4 @@
-# r/RLCraft launch post
+# r/RLCraft launch post — Rich Text Editor version
 
 ## Title
 
@@ -23,66 +23,104 @@ Keep the hook for the **first line of the body**, where it costs nothing.
 
 ---
 
-## How to build the post
+## Using the Rich Text Editor
 
-Same as last time. Reddit's composer drops uploaded images at the top of the body rather
-than at the cursor, so build it in order: paste a text block, add its image, paste the next.
+**The editor does not interpret pasted markdown.** Paste `**bold**` and you get literal
+asterisks on the page. So every block below is plain text with nothing to strip out, and
+the formatting is applied afterwards.
 
-**This mod has less to show than the recipe one.** Recipes are inherently screenshot-friendly;
-death mechanics are not. So this post is text-led with two images, and that is fine - do not
-pad it with config screenshots that say nothing a sentence would not say better.
+Two things make this easier than last time:
 
-Images are in `images/`. Work on desktop, in one sitting.
+- **Images go where the cursor is.** This is the reason to use the rich text editor at all.
+  The old build-in-order dance for the enchantment post existed because the markdown
+  composer dumped every upload at the top of the body. Here you just put the cursor where
+  the image belongs and use the image button.
+- **Typing markdown still works, pasting it does not.** Typing `- ` at the start of an
+  empty line turns it into a bullet list and you can then type or paste each item. Same for
+  headings. It is only pasted markup that comes through dead.
+
+**Formatting, once the text is in:**
+
+- Bold: select the phrase, `Ctrl+B`
+- Bullet list: click the list button, or type `- ` on an empty line first
+- Links: select the words, `Ctrl+K`, paste the URL
+
+**If any of this gets annoying,** there is a "Switch to Markdown Editor" toggle in the
+composer, and the previous version of this file is in the git history at `reddit-post.md`
+before this commit.
 
 ---
 
-## STEP 1 - paste this
+## Block 1
 
-Every RLCraft run I've had ends up at the same fork. Either you die in a lava lake you can't get back to and lose four hours of progress, or you turn on `keepInventory` and within a week death means nothing and you're jumping off cliffs as a fast travel system. I've played it both ways and I didn't enjoy either.
+```
+Every RLCraft run I've had ends up at the same fork. Either you die in a lava lake you can't get back to and lose four hours of progress, or you turn on keepInventory and within a week death means nothing and you're jumping off cliffs as a fast travel system. I've played it both ways and I didn't enjoy either.
 
 So I made the setting in between.
 
-**When you die, you keep your gear and lose a heart.** Armour, hotbar, both hands, baubles and your backpack all survive. Your main inventory drops. Your maximum health goes down by one heart, permanently.
+When you die, you keep your gear and lose a heart. Armour, hotbar, both hands, baubles and your backpack all survive. Your main inventory drops. Your maximum health goes down by one heart, permanently.
+```
 
-## STEP 2 - add image: `images/DeathMessage.png`
+**Format:** bold `When you die, you keep your gear and lose a heart.` — nothing else.
 
-## STEP 3 - paste this
-
-**The floor is the part I think actually makes it work.** It sits at 10 hearts by default - exactly what Scaling Health starts you with. So the hearts you were born with can never be taken away. Only the ones you earned from heart containers are ever at risk.
-
-That does two things. Dying while you're still learning the pack costs you nothing at all, so a new player never gets dug into a hole they can't climb out of. And every heart container you find stops being a free upgrade, because spending one puts it permanently on the line. "Do I bank this now or hold it until I trust myself?" turned out to be a much more interesting question than I expected.
-
-**Your dropped items also never despawn.** Vanilla deletes them after five minutes, which in a pack this size is rarely enough time to fight your way back to where you died. Now the pile just waits. RLCraft already gives you the Return Scroll to get there, so the corpse run becomes a real decision instead of a stopwatch.
-
-Everything you kept takes 10% durability, so walking away with your gear still costs you something. It can never break an item outright.
-
-## STEP 4 - add image: `images/ConfigItems.png`
-
-## STEP 5 - paste this (last block)
-
-It's all configurable - 22 settings across four categories, read live so nothing needs a restart. The one I'd point at is `DEATHS_PER_PENALTY`: set it to 3 and you get two free deaths before the third one takes a heart. Scaling Health already does flat per-death health loss and a minimum health floor, but it has no concept of a grace period, and that's genuinely the reason this exists as a mod rather than a config change.
-
-You can also exempt whole dimensions or specific damage types, turn the item keeping off entirely if you'd rather Corpse Complex handled it, or leave `keepInventory` on - the mod detects it and won't touch your inventory.
-
-Needs Scaling Health. Baubles and Wearable Backpacks are optional. 1.12.2, works on base RLCraft and Dregora, and on any other 1.12.2 pack with Scaling Health.
-
-**CurseForge:** https://www.curseforge.com/minecraft/mc-mods/rlcraft-death-overhaul
-
-**Source (MIT):** https://github.com/ExiledRadio/RLCraftDeathOverhaul
-
-I've tuned the defaults against my own playthrough, which is a sample size of one. If the heart cost feels wrong, or the floor is in the wrong place, or dropping your main inventory is too harsh or not harsh enough, tell me - those are exactly the numbers I'd like other opinions on.
+**Then insert:** `images/DeathMessage.png`
 
 ---
 
-## First comment - post immediately after the post goes live
+## Block 2
 
+```
+The floor is the part I think actually makes it work. It sits at 10 hearts by default - exactly what Scaling Health starts you with. So the hearts you were born with can never be taken away. Only the ones you earned from heart containers are ever at risk.
+
+That does two things. Dying while you're still learning the pack costs you nothing at all, so a new player never gets dug into a hole they can't climb out of. And every heart container you find stops being a free upgrade, because spending one puts it permanently on the line. "Do I bank this now or hold it until I trust myself?" turned out to be a much more interesting question than I expected.
+
+Your dropped items also never despawn. Vanilla deletes them after five minutes, which in a pack this size is rarely enough time to fight your way back to where you died. Now the pile just waits. RLCraft already gives you the Return Scroll to get there, so the corpse run becomes a real decision instead of a stopwatch.
+
+Everything you kept takes 10% durability, so walking away with your gear still costs you something. It can never break an item outright.
+```
+
+**Format:** bold `The floor is the part I think actually makes it work.` and
+`Your dropped items also never despawn.`
+
+**Then insert:** `images/ConfigItems.png`
+
+---
+
+## Block 3 — last one
+
+```
+It's all configurable - 22 settings across four categories, read live so nothing needs a restart. The one I'd point at is DEATHS_PER_PENALTY: set it to 3 and you get two free deaths before the third one takes a heart. Scaling Health already does flat per-death health loss and a minimum health floor, but it has no concept of a grace period, and that's genuinely the reason this exists as a mod rather than a config change.
+
+You can also exempt whole dimensions or specific damage types, turn the item keeping off entirely if you'd rather Corpse Complex handled it, or leave keepInventory on - the mod detects it and won't touch your inventory.
+
+Needs Scaling Health. Baubles and Wearable Backpacks are optional. 1.12.2, works on base RLCraft and Dregora, and on any other 1.12.2 pack with Scaling Health.
+
+CurseForge: https://www.curseforge.com/minecraft/mc-mods/rlcraft-death-overhaul
+
+Source (MIT): https://github.com/ExiledRadio/RLCraftDeathOverhaul
+
+I've tuned the defaults against my own playthrough, which is a sample size of one. If the heart cost feels wrong, or the floor is in the wrong place, or dropping your main inventory is too harsh or not harsh enough, tell me - those are exactly the numbers I'd like other opinions on.
+```
+
+**Format:** bold `CurseForge:` and `Source (MIT):`. The editor turns both URLs into links on
+its own once you paste them, so leave them alone.
+
+---
+
+## First comment — post immediately after the post goes live
+
+```
 Couple of things worth saying up front:
 
-**This is unofficial.** Not affiliated with Shivaxi, the Dregora team, or the author of Scaling Health. Just a player-made addon.
+This is unofficial. Not affiliated with Shivaxi, the Dregora team, or the author of Scaling Health. Just a player-made addon.
 
-**If you already run something that keeps items on death** - Corpse Complex with its Inventory Module switched on, or a gravestone mod - turn one of the two off. Two mods both trying to save the same inventory can duplicate or lose items. Out of the box there's no clash, since Corpse Complex ships with RLCraft with that module disabled, and the mod warns in the log if it spots one.
+If you already run something that keeps items on death - Corpse Complex with its Inventory Module switched on, or a gravestone mod - turn one of the two off. Two mods both trying to save the same inventory can duplicate or lose items. Out of the box there's no clash, since Corpse Complex ships with RLCraft with that module disabled, and the mod warns in the log if it spots one.
 
-**The vanilla `keepInventory` gamerule always wins.** If you've got it on, the mod leaves your inventory completely alone and only the heart cost applies.
+The vanilla keepInventory gamerule always wins. If you've got it on, the mod leaves your inventory completely alone and only the heart cost applies.
+```
+
+**Format:** bold `This is unofficial.`, `If you already run something that keeps items on death`,
+and `The vanilla keepInventory gamerule always wins.`
 
 ---
 
