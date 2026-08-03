@@ -47,6 +47,8 @@ public class InventoryKeepHandler {
     private static final int LIST_ARMOR = 1;
     private static final int LIST_OFFHAND = 2;
 
+    private static final int TICKS_PER_MINUTE = 20 * 60;
+
     private static final String NBT_LIST = "List";
     private static final String NBT_SLOT = "Slot";
     private static final String NBT_ITEM = "Item";
@@ -155,15 +157,20 @@ public class InventoryKeepHandler {
      */
     @SubscribeEvent
     public static void onPlayerDrops(PlayerDropsEvent event) {
-        if (!ModConfig.NO_DROP_DESPAWN || event.getEntityPlayer() == null
+        int minutes = ModConfig.DROP_DESPAWN_MINUTES;
+        if (minutes == 0 || event.getEntityPlayer() == null
                 || event.getEntityPlayer().world.isRemote) {
             return;
         }
+
+        // Forge reads `lifespan` per item rather than using the fixed 6000-tick vanilla
+        // lifetime, and its despawn test is a plain `age >= lifespan` with no sentinel
+        // for "never" — so forever has to be spelled as a value age cannot reach.
+        int lifespan = minutes < 0 ? Integer.MAX_VALUE : minutes * TICKS_PER_MINUTE;
+
         for (EntityItem item : event.getDrops()) {
             if (item != null) {
-                // Forge reads this per-item instead of the fixed 6000-tick vanilla
-                // lifetime, so this is all it takes to make a death pile permanent.
-                item.lifespan = Integer.MAX_VALUE;
+                item.lifespan = lifespan;
             }
         }
     }

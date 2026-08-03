@@ -53,7 +53,7 @@ public class ModConfig {
             "ENABLE_ITEM_KEEPING", "KEEP_ARMOR", "KEEP_HOTBAR", "KEEP_MAINHAND",
             "KEEP_OFFHAND", "KEEP_BAUBLES", "KEEP_WEARABLE_BACKPACK",
             "KEEP_MAIN_INVENTORY", "KEEP_XP",
-            "DURABILITY_LOSS_ON_KEPT_ITEMS", "NO_DROP_DESPAWN");
+            "DURABILITY_LOSS_ON_KEPT_ITEMS", "DROP_DESPAWN_MINUTES");
 
     private static final List<String> ORDER_EXEMPTIONS = Arrays.asList(
             "COUNT_CREATIVE_DEATHS", "EXEMPT_DIMENSIONS", "EXEMPT_DAMAGE_TYPES");
@@ -94,7 +94,10 @@ public class ModConfig {
     public static boolean KEEP_WEARABLE_BACKPACK = true;
     public static boolean KEEP_XP = false;
     public static float DURABILITY_LOSS_ON_KEPT_ITEMS = 0.10F;
-    public static boolean NO_DROP_DESPAWN = true;
+    public static int DROP_DESPAWN_MINUTES = 15;
+
+    /** Longest despawn time the config accepts, in minutes. A week. */
+    private static final int MAX_DESPAWN_MINUTES = 10080;
 
     // exemptions
     public static boolean COUNT_CREATIVE_DEATHS = false;
@@ -118,12 +121,14 @@ public class ModConfig {
 
     public static void loadConfig() {
         migrateLegacyCategory();
+        migrateDropDespawn();
 
         loadHearts();
         loadItems();
         loadExemptions();
         loadMessages();
 
+        pruneUnknownKeys();
         clampAndDerive();
 
         if (config.hasChanged()) {
@@ -179,6 +184,60 @@ public class ModConfig {
                 "Split the old flat '{}' config block into hearts / items / exemptions / messages "
                         + "- {} setting(s) kept their value, {} obsolete one(s) removed.",
                 LEGACY_CATEGORY, moved, dropped);
+    }
+
+    /**
+     * Carries the old {@code NO_DROP_DESPAWN} boolean onto the timer that replaced it.
+     *
+     * <p>Only the {@code false} case needs handling. Someone who turned it off was asking
+     * this mod not to touch their drops, and the timer spells that as {@code 0}; leaving
+     * them to pick up the new 15 minute default would quietly start changing something
+     * they had opted out of. {@code true} was the default and simply becomes the new
+     * default, which is the behaviour change this release is for.
+     */
+    private static void migrateDropDespawn() {
+        if (!config.hasCategory(CATEGORY_ITEMS)) {
+            return;
+        }
+        ConfigCategory items = config.getCategory(CATEGORY_ITEMS);
+        if (!items.containsKey("NO_DROP_DESPAWN") || items.containsKey("DROP_DESPAWN_MINUTES")) {
+            return;
+        }
+        if (!items.get("NO_DROP_DESPAWN").getBoolean(true)) {
+            items.put("DROP_DESPAWN_MINUTES",
+                    new Property("DROP_DESPAWN_MINUTES", "0", Property.Type.INTEGER));
+            RLCraftDeathOverhaul.LOGGER.info(
+                    "NO_DROP_DESPAWN was off, so DROP_DESPAWN_MINUTES has been set to 0 - this mod "
+                            + "will keep leaving your death drops alone.");
+        }
+        // The obsolete key itself is cleared by pruneUnknownKeys once loading is done.
+    }
+
+    /**
+     * Drops any property sitting in one of our categories that the mod no longer reads.
+     *
+     * <p>Forge never removes a property once it has stopped asking for it, so without
+     * this every renamed setting would linger forever, looking editable while doing
+     * nothing. The order lists double as the definition of what is still real.
+     */
+    private static void pruneUnknownKeys() {
+        int removed = 0;
+        for (String category : CATEGORIES) {
+            if (!config.hasCategory(category)) {
+                continue;
+            }
+            ConfigCategory cat = config.getCategory(category);
+            for (String key : new ArrayList<String>(cat.keySet())) {
+                if (!category.equals(CATEGORY_OF_KEY.get(key))) {
+                    cat.remove(key);
+                    removed++;
+                }
+            }
+        }
+        if (removed > 0) {
+            RLCraftDeathOverhaul.LOGGER.info("Removed {} config setting(s) this version no longer "
+                    + "uses.", removed);
+        }
     }
 
     // ------------------------------------------------------------------ hearts
@@ -346,16 +405,21 @@ public class ModConfig {
                         + "one point of durability instead."
         );
 
-        NO_DROP_DESPAWN = config.getBoolean(
-                "NO_DROP_DESPAWN", CATEGORY_ITEMS, true,
-                "Stop items dropped on death from ever despawning. ON by default.\n"
-                        + "Vanilla deletes dropped items after five minutes, which in a pack this\n"
-                        + "large is rarely long enough to fight your way back. With this on, your\n"
-                        + "death pile waits for you indefinitely.\n"
+        DROP_DESPAWN_MINUTES = config.getInt(
+                "DROP_DESPAWN_MINUTES", CATEGORY_ITEMS, 15, -1, MAX_DESPAWN_MINUTES,
+                "How long items dropped on death survive before despawning, in minutes.\n"
+                        + "\n"
+                        + "  15  default. Vanilla gives you five, which in a pack this large is\n"
+                        + "      rarely long enough to fight your way back to where you died.\n"
+                        + "   0  leave drops alone entirely - vanilla timing, or whatever another\n"
+                        + "      mod has already decided. Use this if something else manages drops.\n"
+                        + "  -1  never despawn. Your death pile waits forever.\n"
+                        + "      Be careful with this one on a busy server: piles nobody collects\n"
+                        + "      accumulate as loaded entities and will cost you performance.\n"
                         + "\n"
                         + "Applies to everything you dropped whether or not ENABLE_ITEM_KEEPING is\n"
                         + "on, since it is about the pile you lost rather than the gear you kept.\n"
-                        + "Items destroyed by lava or cactus are still gone - this only stops the\n"
+                        + "Items destroyed by lava or cactus are still gone - this only changes the\n"
                         + "despawn timer, it does not make drops indestructible."
         );
     }

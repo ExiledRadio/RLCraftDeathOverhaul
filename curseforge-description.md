@@ -14,7 +14,7 @@ Works out of the box. No config editing, no second mod to set up.
 
 **You drop your main inventory.** The 27 non-hotbar slots. Your loot and materials are still on the line, which is what gives you a reason to go back.
 
-**Your dropped items never despawn.** Vanilla deletes them after 5 minutes. In a pack this size that is rarely enough time to fight your way back to a corpse run, and it is one of the most common ways to lose hours of progress. Now the pile waits indefinitely. RLCraft already gives you Corpse Complex's Return Scroll to get there.
+**Your dropped items last 15 minutes instead of 5.** Vanilla's timer is rarely enough to fight your way back in a pack this size, and running out of it is one of the most common ways to lose hours of progress. RLCraft already gives you Corpse Complex's Return Scroll to get there. Configurable, including never despawning at all if you want it.
 
 **Everything you kept takes 10% durability.** Walking away with your gear still costs repair materials. It can never break an item - anything that would be destroyed stops at 1 durability instead.
 
@@ -34,7 +34,7 @@ This mod is the middle setting the gamerule cannot express:
 |---|---|---|
 | Equipped gear | Kept | Kept |
 | Main inventory | Kept | **Dropped** |
-| Items left on the ground | None | **Never despawn** |
+| Items left on the ground | None | **Last 15 minutes, not 5** |
 | Durability cost | None | 10% on kept items |
 | Maximum health | Unchanged | **A heart, down to a floor** |
 
@@ -98,7 +98,7 @@ Settings are split into four groups.
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots. This is the one you drop. |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it. |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
-| `NO_DROP_DESPAWN` | `true` | Dropped items never despawn. |
+| `DROP_DESPAWN_MINUTES` | `15` | How long death drops last. `0` leaves them alone, `-1` never despawns. |
 
 ![The items config group](https://media.forgecdn.net/attachments/1838/153/configitems-png.png)
 

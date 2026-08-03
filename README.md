@@ -12,7 +12,7 @@ Built for RLCraft and RLCraft Dregora, but nothing in it is pack-specific.
 |---|---|
 | **Kept** | Armour, hotbar, mainhand, offhand, Baubles (which covers the Tool Belt), Wearable Backpack and its contents |
 | **Dropped** | Your main inventory — the 27 non-hotbar slots |
-| **Drops never despawn** | Vanilla deletes them after 5 minutes. Now the pile waits indefinitely |
+| **Drops last 15 minutes** | Vanilla gives you 5. Configurable, `-1` for never |
 | **Durability** | 10% off every damageable item you kept. Never breaks anything — stops at 1 durability |
 | **Health** | One heart off your max, down to a floor. Recovered only via heart containers |
 
@@ -64,7 +64,7 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots — the one you drop |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items |
-| `NO_DROP_DESPAWN` | `true` | Dropped items never despawn |
+| `DROP_DESPAWN_MINUTES` | `15` | Death drop lifetime. `0` leaves them alone, `-1` never despawns |
 
 **exemptions** — deaths that do not count
 

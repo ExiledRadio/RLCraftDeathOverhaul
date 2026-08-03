@@ -44,6 +44,20 @@ minecraft {
 
 processResources {
 
+	// Gradle does not treat `expand` values as task inputs, so without declaring them
+	// here the task stays UP-TO-DATE across a version bump and the jar ships an
+	// mcmod.info still claiming the previous version. Declaring them makes a changed
+	// property invalidate the task the way a changed file would.
+	inputs.property 'version', project.version
+	inputs.property 'mod_id', mod_id
+	inputs.property 'mod_name', mod_name
+	inputs.property 'mod_author', mod_author
+	inputs.property 'mod_description', mod_description
+	inputs.property 'mod_credits', mod_credits
+	inputs.property 'mod_url', mod_url
+	inputs.property 'mc_version', mc_version
+	inputs.property 'mod_version', mod_version
+
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version': project.version,
