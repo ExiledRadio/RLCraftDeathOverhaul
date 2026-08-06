@@ -52,7 +52,8 @@ public class ModConfig {
     private static final List<String> ORDER_ITEMS = Arrays.asList(
             "ENABLE_ITEM_KEEPING", "KEEP_ARMOR", "KEEP_HOTBAR", "KEEP_MAINHAND",
             "KEEP_OFFHAND", "KEEP_BAUBLES", "KEEP_WEARABLE_BACKPACK",
-            "KEEP_MAIN_INVENTORY", "KEEP_XP", "DROP_EVERYTHING_AT_MIN_HEALTH",
+            "KEEP_MAIN_INVENTORY", "KEEP_XP", "KEEP_CURSED_ITEMS",
+            "DROP_EVERYTHING_AT_MIN_HEALTH",
             "DURABILITY_LOSS_ON_KEPT_ITEMS", "DROP_DESPAWN_MINUTES");
 
     private static final List<String> ORDER_EXEMPTIONS = Arrays.asList(
@@ -114,6 +115,7 @@ public class ModConfig {
     public static boolean KEEP_BAUBLES = true;
     public static boolean KEEP_WEARABLE_BACKPACK = true;
     public static boolean KEEP_XP = false;
+    public static boolean KEEP_CURSED_ITEMS = true;
     public static boolean DROP_EVERYTHING_AT_MIN_HEALTH = false;
     public static float DURABILITY_LOSS_ON_KEPT_ITEMS = 0.10F;
     public static int DROP_DESPAWN_MINUTES = 15;
@@ -418,6 +420,30 @@ public class ModConfig {
                 "Keep your experience on death instead of dropping it.\n"
                         + "OFF by default: losing levels is a normal part of dying, and RLCraft's own\n"
                         + "Corpse Complex already lets you recover some of it."
+        );
+
+        KEEP_CURSED_ITEMS = config.getBoolean(
+                "KEEP_CURSED_ITEMS", CATEGORY_ITEMS, true,
+                "Keep items that a curse would otherwise destroy when you die.\n"
+                        + "\n"
+                        + "Two curses destroy an item rather than let it drop:\n"
+                        + "  Curse of Vanishing   - vanilla\n"
+                        + "  Curse of Possession  - So Many Enchantments, which RLCraft ships\n"
+                        + "\n"
+                        + "ON by default, so a cursed item is kept like anything else in the slots\n"
+                        + "you have chosen to keep. The point of this mod is that death costs you\n"
+                        + "hearts rather than gear, and an item quietly deleted on death is the\n"
+                        + "loudest possible exception to that.\n"
+                        + "\n"
+                        + "Set to false to let both curses work normally - cursed items are left\n"
+                        + "behind when everything else is saved, and are destroyed as they would be\n"
+                        + "without this mod installed.\n"
+                        + "\n"
+                        + "Only applies to slots that are being kept anyway. A cursed item in your\n"
+                        + "main inventory still drops while KEEP_MAIN_INVENTORY is false, and\n"
+                        + "Curse of Possession still destroys it on the way down.\n"
+                        + "Curse of Binding is unaffected either way - it stops you removing armour,\n"
+                        + "it does not destroy anything."
         );
 
         DROP_EVERYTHING_AT_MIN_HEALTH = config.getBoolean(

@@ -2,6 +2,7 @@ package com.exiledradio.rlcraftdeathoverhaul;
 
 import com.exiledradio.rlcraftdeathoverhaul.compat.BackpackCompat;
 import com.exiledradio.rlcraftdeathoverhaul.compat.BaublesCompat;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -133,9 +135,7 @@ public class InventoryKeepHandler {
             if (stack.isEmpty() || !shouldKeep(player, listId, slot)) {
                 continue;
             }
-            // Curse of Vanishing destroys the item on death, and vanilla applies that
-            // just before dropping. Saving such an item would quietly defeat the curse.
-            if (EnchantmentHelper.hasVanishingCurse(stack)) {
+            if (!ModConfig.KEEP_CURSED_ITEMS && isDestroyedByCurse(stack)) {
                 continue;
             }
             NBTTagCompound entry = new NBTTagCompound();
@@ -145,6 +145,60 @@ public class InventoryKeepHandler {
             kept.appendTag(entry);
             slots.set(slot, ItemStack.EMPTY);
         }
+    }
+
+    /**
+     * Whether a curse would destroy this stack rather than let it drop.
+     *
+     * <p>Two curses do this, by opposite mechanisms, and both are defeated the same way —
+     * by taking the item out of the inventory before either gets its turn:
+     *
+     * <ul>
+     *   <li><b>Curse of Vanishing</b> (vanilla) is applied by
+     *       {@code EntityPlayer.destroyVanishingCursedItems()}, which runs inside
+     *       {@code onDeath} after {@code LivingDeathEvent} and before the drop. An item
+     *       already lifted out of the inventory is never seen by it.
+     *   <li><b>Curse of Possession</b> (So Many Enchantments) kills the {@code EntityItem}
+     *       as it spawns, from {@code EntityJoinWorldEvent}. An item that is kept never
+     *       becomes an EntityItem, so that never fires either.
+     * </ul>
+     *
+     * <p>Curse of Binding is deliberately not included: it stops you unequipping armour,
+     * it does not destroy anything.
+     */
+    private static boolean isDestroyedByCurse(ItemStack stack) {
+        if (EnchantmentHelper.hasVanishingCurse(stack)) {
+            return true;
+        }
+        Enchantment possession = getPossessionCurse();
+        return possession != null
+                && EnchantmentHelper.getEnchantmentLevel(possession, stack) > 0;
+    }
+
+    private static Enchantment possessionCurse;
+    private static boolean possessionCurseResolved;
+
+    /**
+     * Curse of Possession, looked up from the enchantment registry so So Many Enchantments
+     * is not needed to compile or to run.
+     *
+     * <p>Matched on the path case-insensitively on purpose: So Many Enchantments re-cased
+     * its registry names between the version base RLCraft ships and the one Dregora does,
+     * so a hard-coded id would silently miss on one of the two packs.
+     */
+    private static Enchantment getPossessionCurse() {
+        if (!possessionCurseResolved) {
+            possessionCurseResolved = true;
+            for (Enchantment enchantment : Enchantment.REGISTRY) {
+                ResourceLocation id = Enchantment.REGISTRY.getNameForObject(enchantment);
+                if (id != null && "curseofpossession".equalsIgnoreCase(id.getPath())) {
+                    possessionCurse = enchantment;
+                    RLCraftDeathOverhaul.LOGGER.debug("Found Curse of Possession as {}", id);
+                    break;
+                }
+            }
+        }
+        return possessionCurse;
     }
 
     private static boolean shouldKeep(EntityPlayer player, int listId, int slot) {
