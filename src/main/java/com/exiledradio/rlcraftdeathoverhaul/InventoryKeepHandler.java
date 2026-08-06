@@ -147,15 +147,20 @@ public class InventoryKeepHandler {
             if (stack.isEmpty()) {
                 continue;
             }
-            boolean cursed = isDestroyedByCurse(stack);
+            // Vanilla's own curse, left alone on purpose — it is destroyed by
+            // destroyVanishingCursedItems moments from now and players expect that.
+            if (EnchantmentHelper.hasVanishingCurse(stack)) {
+                continue;
+            }
+            boolean possessed = hasPossessionCurse(stack);
 
-            if (ModConfig.cursesKeptAlways() && cursed) {
+            if (ModConfig.cursesKeptAlways() && possessed) {
                 // Survives regardless of slot, and regardless of everything else going.
             } else if (cursedOnly) {
                 continue;
             } else if (!shouldKeep(player, listId, slot)) {
                 continue;
-            } else if (cursed && ModConfig.cursesNeverKept()) {
+            } else if (possessed && ModConfig.cursesNeverKept()) {
                 continue;
             }
             NBTTagCompound entry = new NBTTagCompound();
@@ -168,28 +173,22 @@ public class InventoryKeepHandler {
     }
 
     /**
-     * Whether a curse would destroy this stack rather than let it drop.
+     * Whether Curse of Possession (So Many Enchantments) is on this stack.
      *
-     * <p>Two curses do this, by opposite mechanisms, and both are defeated the same way —
-     * by taking the item out of the inventory before either gets its turn:
+     * <p>The curse destroys the {@code EntityItem} once it is lying in the world — So Many
+     * Enchantments scans for it, and RLTweaker wraps that scan to run every few ticks per
+     * dimension rather than every tick. Either way it only ever looks at items on the
+     * ground, so the single way to save one is to never let it drop.
      *
-     * <ul>
-     *   <li><b>Curse of Vanishing</b> (vanilla) is applied by
-     *       {@code EntityPlayer.destroyVanishingCursedItems()}, which runs inside
-     *       {@code onDeath} after {@code LivingDeathEvent} and before the drop. An item
-     *       already lifted out of the inventory is never seen by it.
-     *   <li><b>Curse of Possession</b> (So Many Enchantments) kills the {@code EntityItem}
-     *       as it spawns, from {@code EntityJoinWorldEvent}. An item that is kept never
-     *       becomes an EntityItem, so that never fires either.
-     * </ul>
+     * <p>Curse of Vanishing is deliberately not covered here. It is vanilla, players
+     * expect it to work, and {@code KEEP_CURSED_ITEMS} is about the RLCraft-specific
+     * curse. Vanishing-cursed items are always left for
+     * {@code EntityPlayer.destroyVanishingCursedItems()} to deal with.
      *
-     * <p>Curse of Binding is deliberately not included: it stops you unequipping armour,
-     * it does not destroy anything.
+     * <p>Curse of Binding is unaffected: it stops you unequipping armour, it destroys
+     * nothing.
      */
-    private static boolean isDestroyedByCurse(ItemStack stack) {
-        if (EnchantmentHelper.hasVanishingCurse(stack)) {
-            return true;
-        }
+    private static boolean hasPossessionCurse(ItemStack stack) {
         Enchantment possession = getPossessionCurse();
         return possession != null
                 && EnchantmentHelper.getEnchantmentLevel(possession, stack) > 0;

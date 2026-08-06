@@ -123,7 +123,7 @@ public class ModConfig {
     /** Curses behave as they would without this mod installed. */
     public static final String CURSES_NEVER = "NEVER";
 
-    public static String KEEP_CURSED_ITEMS = CURSES_WITH_GEAR;
+    public static String KEEP_CURSED_ITEMS = CURSES_ALWAYS;
     public static boolean DROP_EVERYTHING_AT_MIN_HEALTH = false;
     public static float DURABILITY_LOSS_ON_KEPT_ITEMS = 0.10F;
     public static int DROP_DESPAWN_MINUTES = 15;
@@ -265,7 +265,7 @@ public class ModConfig {
         if (existing == null || existing.getType() != Property.Type.BOOLEAN) {
             return;
         }
-        String mode = existing.getBoolean(true) ? CURSES_WITH_GEAR : CURSES_NEVER;
+        String mode = existing.getBoolean(true) ? CURSES_ALWAYS : CURSES_NEVER;
         items.remove("KEEP_CURSED_ITEMS");
         items.put("KEEP_CURSED_ITEMS",
                 new Property("KEEP_CURSED_ITEMS", mode, Property.Type.STRING));
@@ -456,32 +456,34 @@ public class ModConfig {
         );
 
         KEEP_CURSED_ITEMS = config.getString(
-                "KEEP_CURSED_ITEMS", CATEGORY_ITEMS, CURSES_WITH_GEAR,
-                "What happens to items a curse would otherwise destroy when you die.\n"
+                "KEEP_CURSED_ITEMS", CATEGORY_ITEMS, CURSES_ALWAYS,
+                "What happens to items carrying Curse of Possession when you die.\n"
                         + "\n"
-                        + "Two curses destroy an item rather than let it drop:\n"
-                        + "  Curse of Vanishing   - vanilla\n"
-                        + "  Curse of Possession  - So Many Enchantments, which RLCraft ships\n"
+                        + "That curse destroys an item once it is lying on the ground, which means\n"
+                        + "there is no middle outcome available: an item either stays in your\n"
+                        + "inventory or it is gone. Dropping it and having it survive is not\n"
+                        + "something this mod can offer, because destroying dropped ones is the\n"
+                        + "entire curse.\n"
                         + "\n"
-                        + "ALWAYS     - the item survives no matter what, in any slot, including a\n"
-                        + "             death that would otherwise cost you everything through\n"
-                        + "             DROP_EVERYTHING_AT_MIN_HEALTH. Worth considering, because a\n"
-                        + "             dropped item can be walked back to and a cursed one cannot -\n"
-                        + "             it is destroyed outright, so it is the only thing in the mod\n"
-                        + "             you can lose permanently.\n"
+                        + "ALWAYS     - default. The item stays in your inventory no matter what, in\n"
+                        + "             any slot, including a death that costs you everything through\n"
+                        + "             DROP_EVERYTHING_AT_MIN_HEALTH. Anything else you drop is lying\n"
+                        + "             on the ground waiting for you; a possessed item would simply\n"
+                        + "             be gone, so this is the only setting that never loses one.\n"
                         + "\n"
-                        + "WITH_GEAR  - default. The item is kept like anything else in the slots you\n"
-                        + "             have chosen to keep, and lost when that gear is lost. A cursed\n"
-                        + "             item in your main inventory still drops while\n"
-                        + "             KEEP_MAIN_INVENTORY is false, and DROP_EVERYTHING_AT_MIN_HEALTH\n"
-                        + "             takes it with everything else.\n"
+                        + "WITH_GEAR  - kept like anything else in the slots you have chosen to keep,\n"
+                        + "             and destroyed when that gear is lost. A possessed item in your\n"
+                        + "             main inventory is destroyed while KEEP_MAIN_INVENTORY is\n"
+                        + "             false, and DROP_EVERYTHING_AT_MIN_HEALTH destroys it too.\n"
                         + "\n"
-                        + "NEVER      - the curses work exactly as they would without this mod. Cursed\n"
-                        + "             items are left behind when everything else is saved, and are\n"
-                        + "             destroyed on death.\n"
+                        + "NEVER      - the curse works exactly as it would without this mod.\n"
+                        + "             Possessed items are left behind when everything else is saved,\n"
+                        + "             and destroyed on death.\n"
                         + "\n"
-                        + "Curse of Binding is unaffected by all three - it stops you removing armour,\n"
-                        + "it does not destroy anything.\n"
+                        + "Curse of Vanishing is not affected by this setting. It is vanilla, players\n"
+                        + "expect it to work, and it is always left to destroy its item.\n"
+                        + "Curse of Binding is unaffected too - it stops you removing armour, it does\n"
+                        + "not destroy anything.\n"
                         + "Baubles follow KEEP_BAUBLES rather than this setting.",
                 new String[]{CURSES_ALWAYS, CURSES_WITH_GEAR, CURSES_NEVER}
         ).toUpperCase(Locale.ROOT);
@@ -614,8 +616,10 @@ public class ModConfig {
         if (DURABILITY_LOSS_ON_KEPT_ITEMS < 0.0F) DURABILITY_LOSS_ON_KEPT_ITEMS = 0.0F;
         if (DURABILITY_LOSS_ON_KEPT_ITEMS > 1.0F) DURABILITY_LOSS_ON_KEPT_ITEMS = 1.0F;
 
-        if (!CURSES_ALWAYS.equals(KEEP_CURSED_ITEMS) && !CURSES_NEVER.equals(KEEP_CURSED_ITEMS)) {
-            KEEP_CURSED_ITEMS = CURSES_WITH_GEAR;
+        if (!CURSES_ALWAYS.equals(KEEP_CURSED_ITEMS)
+                && !CURSES_WITH_GEAR.equals(KEEP_CURSED_ITEMS)
+                && !CURSES_NEVER.equals(KEEP_CURSED_ITEMS)) {
+            KEEP_CURSED_ITEMS = CURSES_ALWAYS;
         }
 
         Set<String> exempt = new HashSet<String>();

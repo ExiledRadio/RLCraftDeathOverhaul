@@ -63,7 +63,7 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots — the one you drop |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it |
-| `KEEP_CURSED_ITEMS` | `WITH_GEAR` | Curse of Vanishing / Possession items: `ALWAYS`, `WITH_GEAR`, `NEVER` |
+| `KEEP_CURSED_ITEMS` | `ALWAYS` | Curse of Possession items: `ALWAYS`, `WITH_GEAR`, `NEVER` |
 | `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the minimum, pay in items instead. See below |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items |
 | `DROP_DESPAWN_MINUTES` | `15` | Death drop lifetime. `0` leaves them alone, `-1` never despawns |
@@ -139,7 +139,10 @@ their classes are never loaded.
   restart cannot lose them.
 - Items are lifted out during `LivingDeathEvent`, which fires before
   `EntityPlayer.onDeath` calls `dropAllItems()`, so vanilla never sees them.
-- Curse of Vanishing is respected: cursed items are never kept.
+- Curse of Vanishing is always respected — those items are never kept, and vanilla
+  destroys them as normal. Curse of Possession is the one `KEEP_CURSED_ITEMS` governs,
+  because it destroys the `EntityItem` after it lands rather than before it drops, so
+  there is no outcome where a possessed item survives on the ground.
 - There is no separate Tool Belt option. With Baubles installed the belt sits in a Baubles
   slot, so `KEEP_BAUBLES` covers it; stashing it again through Tool Belt's own API would
   find the same stack twice and duplicate it.
