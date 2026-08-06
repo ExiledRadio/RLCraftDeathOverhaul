@@ -63,7 +63,7 @@ Split into four categories: `hearts`, `items`, `exemptions`, `messages`.
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots — the one you drop |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it |
-| `KEEP_CURSED_ITEMS` | `true` | Keep items Curse of Vanishing or Possession would destroy |
+| `KEEP_CURSED_ITEMS` | `WITH_GEAR` | Curse of Vanishing / Possession items: `ALWAYS`, `WITH_GEAR`, `NEVER` |
 | `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the minimum, pay in items instead. See below |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items |
 | `DROP_DESPAWN_MINUTES` | `15` | Death drop lifetime. `0` leaves them alone, `-1` never despawns |

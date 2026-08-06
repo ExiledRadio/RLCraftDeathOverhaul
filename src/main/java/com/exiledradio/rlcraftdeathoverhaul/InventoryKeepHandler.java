@@ -73,21 +73,28 @@ public class InventoryKeepHandler {
         // nothing here means vanilla drops the lot, exactly as if the mod were absent.
         // Gated on the death actually counting: an exempt death charges no hearts, so it
         // must not charge items either.
-        if (ModConfig.DROP_EVERYTHING_AT_MIN_HEALTH
+        boolean dropEverything = ModConfig.DROP_EVERYTHING_AT_MIN_HEALTH
                 && DeathPenaltyHandler.isAtHealthFloor(player)
                 && DeathPenaltyHandler.countsAsPenaltyDeath(player, event.getSource())
-                && DeathPenaltyHandler.willChargeThisDeath(player)) {
+                && DeathPenaltyHandler.willChargeThisDeath(player);
+
+        if (dropEverything) {
             DeathPenaltyData.setDroppedEverything(player, true);
             RLCraftDeathOverhaul.LOGGER.debug(
                     "{} died at the health floor - dropping everything", player.getName());
-            return;
+            // Everything goes — except cursed items when they are set to survive
+            // regardless. A dropped item can be walked back to; a cursed one is
+            // destroyed outright, so it is the only thing here that is gone for good.
+            if (!ModConfig.cursesKeptAlways()) {
+                return;
+            }
         }
 
         InventoryPlayer inv = player.inventory;
         NBTTagList kept = new NBTTagList();
-        stash(kept, LIST_MAIN, inv.mainInventory, player);
-        stash(kept, LIST_ARMOR, inv.armorInventory, player);
-        stash(kept, LIST_OFFHAND, inv.offHandInventory, player);
+        stash(kept, LIST_MAIN, inv.mainInventory, player, dropEverything);
+        stash(kept, LIST_ARMOR, inv.armorInventory, player, dropEverything);
+        stash(kept, LIST_OFFHAND, inv.offHandInventory, player, dropEverything);
         if (kept.tagCount() > 0) {
             DeathPenaltyData.setKeptItems(player, kept);
         }
@@ -128,14 +135,27 @@ public class InventoryKeepHandler {
         }
     }
 
+    /**
+     * @param cursedOnly true on a death that costs everything, where the only reason we
+     *                   are here at all is that cursed items are set to survive it. In
+     *                   that mode the slot rules are bypassed: ALWAYS means always.
+     */
     private static void stash(NBTTagList kept, int listId, NonNullList<ItemStack> slots,
-                              EntityPlayer player) {
+                              EntityPlayer player, boolean cursedOnly) {
         for (int slot = 0; slot < slots.size(); slot++) {
             ItemStack stack = slots.get(slot);
-            if (stack.isEmpty() || !shouldKeep(player, listId, slot)) {
+            if (stack.isEmpty()) {
                 continue;
             }
-            if (!ModConfig.KEEP_CURSED_ITEMS && isDestroyedByCurse(stack)) {
+            boolean cursed = isDestroyedByCurse(stack);
+
+            if (ModConfig.cursesKeptAlways() && cursed) {
+                // Survives regardless of slot, and regardless of everything else going.
+            } else if (cursedOnly) {
+                continue;
+            } else if (!shouldKeep(player, listId, slot)) {
+                continue;
+            } else if (cursed && ModConfig.cursesNeverKept()) {
                 continue;
             }
             NBTTagCompound entry = new NBTTagCompound();

@@ -18,7 +18,7 @@ Works out of the box. No config editing, no second mod to set up.
 
 **Everything you kept takes 10% durability.** Walking away with your gear still costs repair materials. It can never break an item - anything that would be destroyed stops at 1 durability instead.
 
-**Curses do not delete your gear.** Curse of Vanishing and RLCraft's Curse of Possession both destroy an item on death rather than let it drop. Anything in a slot you are keeping survives them. Turn `KEEP_CURSED_ITEMS` off if you would rather the curses still bite.
+**Curses do not delete your gear.** Curse of Vanishing and RLCraft's Curse of Possession both destroy an item on death rather than let it drop. Anything in a slot you are keeping survives them by default. `KEEP_CURSED_ITEMS` has three settings - `ALWAYS` protects cursed items even on a death that costs you everything, `WITH_GEAR` is the default, and `NEVER` lets the curses work untouched.
 
 **You lose a heart of maximum health.** Permanently, down to a minimum. Hearts come back only through Scaling Health heart containers.
 
@@ -111,7 +111,7 @@ Settings are split into four groups.
 | `KEEP_WEARABLE_BACKPACK` | `true` | Backpack and contents. |
 | `KEEP_MAIN_INVENTORY` | `false` | The 27 loot slots. This is the one you drop. |
 | `KEEP_XP` | `false` | Keep experience instead of dropping it. |
-| `KEEP_CURSED_ITEMS` | `true` | Keep items Curse of Vanishing or Curse of Possession would destroy. |
+| `KEEP_CURSED_ITEMS` | `WITH_GEAR` | What happens to items Curse of Vanishing or Possession would destroy. `ALWAYS` / `WITH_GEAR` / `NEVER`. |
 | `DROP_EVERYTHING_AT_MIN_HEALTH` | `false` | At the minimum, pay in items instead of hearts. |
 | `DURABILITY_LOSS_ON_KEPT_ITEMS` | `0.10` | Durability charged on kept items. |
 | `DROP_DESPAWN_MINUTES` | `15` | How long death drops last. `0` leaves them alone, `-1` never despawns. |

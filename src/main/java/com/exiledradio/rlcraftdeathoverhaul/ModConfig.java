@@ -115,7 +115,15 @@ public class ModConfig {
     public static boolean KEEP_BAUBLES = true;
     public static boolean KEEP_WEARABLE_BACKPACK = true;
     public static boolean KEEP_XP = false;
-    public static boolean KEEP_CURSED_ITEMS = true;
+
+    /** Cursed items survive everything, including a DROP_EVERYTHING_AT_MIN_HEALTH death. */
+    public static final String CURSES_ALWAYS = "ALWAYS";
+    /** Cursed items are kept like any other gear, and go when your gear goes. */
+    public static final String CURSES_WITH_GEAR = "WITH_GEAR";
+    /** Curses behave as they would without this mod installed. */
+    public static final String CURSES_NEVER = "NEVER";
+
+    public static String KEEP_CURSED_ITEMS = CURSES_WITH_GEAR;
     public static boolean DROP_EVERYTHING_AT_MIN_HEALTH = false;
     public static float DURABILITY_LOSS_ON_KEPT_ITEMS = 0.10F;
     public static int DROP_DESPAWN_MINUTES = 15;
@@ -146,6 +154,7 @@ public class ModConfig {
     public static void loadConfig() {
         migrateLegacyCategory();
         migrateDropDespawn();
+        migrateCursedItems();
         // Must run before the loaders: they call setCategoryPropertyOrder, which appends
         // any key the order list does not mention, and a stale key reaching that point is
         // what crashed 1.1.0 on startup.
@@ -238,6 +247,30 @@ public class ModConfig {
                             + "will keep leaving your death drops alone.");
         }
         // The obsolete key itself is cleared by pruneUnknownKeys once loading is done.
+    }
+
+    /**
+     * Turns the old true/false {@code KEEP_CURSED_ITEMS} into the three-way mode.
+     *
+     * <p>The key kept its name but changed type, and Forge silently resets a property
+     * whose type no longer matches, so without this anyone who had set it to false in
+     * 1.2.0 would quietly find the curses neutralised again.
+     */
+    private static void migrateCursedItems() {
+        if (!config.hasCategory(CATEGORY_ITEMS)) {
+            return;
+        }
+        ConfigCategory items = config.getCategory(CATEGORY_ITEMS);
+        Property existing = items.get("KEEP_CURSED_ITEMS");
+        if (existing == null || existing.getType() != Property.Type.BOOLEAN) {
+            return;
+        }
+        String mode = existing.getBoolean(true) ? CURSES_WITH_GEAR : CURSES_NEVER;
+        items.remove("KEEP_CURSED_ITEMS");
+        items.put("KEEP_CURSED_ITEMS",
+                new Property("KEEP_CURSED_ITEMS", mode, Property.Type.STRING));
+        RLCraftDeathOverhaul.LOGGER.info(
+                "KEEP_CURSED_ITEMS is now a mode rather than on/off - yours became {}.", mode);
     }
 
     /**
@@ -422,29 +455,36 @@ public class ModConfig {
                         + "Corpse Complex already lets you recover some of it."
         );
 
-        KEEP_CURSED_ITEMS = config.getBoolean(
-                "KEEP_CURSED_ITEMS", CATEGORY_ITEMS, true,
-                "Keep items that a curse would otherwise destroy when you die.\n"
+        KEEP_CURSED_ITEMS = config.getString(
+                "KEEP_CURSED_ITEMS", CATEGORY_ITEMS, CURSES_WITH_GEAR,
+                "What happens to items a curse would otherwise destroy when you die.\n"
                         + "\n"
                         + "Two curses destroy an item rather than let it drop:\n"
                         + "  Curse of Vanishing   - vanilla\n"
                         + "  Curse of Possession  - So Many Enchantments, which RLCraft ships\n"
                         + "\n"
-                        + "ON by default, so a cursed item is kept like anything else in the slots\n"
-                        + "you have chosen to keep. The point of this mod is that death costs you\n"
-                        + "hearts rather than gear, and an item quietly deleted on death is the\n"
-                        + "loudest possible exception to that.\n"
+                        + "ALWAYS     - the item survives no matter what, in any slot, including a\n"
+                        + "             death that would otherwise cost you everything through\n"
+                        + "             DROP_EVERYTHING_AT_MIN_HEALTH. Worth considering, because a\n"
+                        + "             dropped item can be walked back to and a cursed one cannot -\n"
+                        + "             it is destroyed outright, so it is the only thing in the mod\n"
+                        + "             you can lose permanently.\n"
                         + "\n"
-                        + "Set to false to let both curses work normally - cursed items are left\n"
-                        + "behind when everything else is saved, and are destroyed as they would be\n"
-                        + "without this mod installed.\n"
+                        + "WITH_GEAR  - default. The item is kept like anything else in the slots you\n"
+                        + "             have chosen to keep, and lost when that gear is lost. A cursed\n"
+                        + "             item in your main inventory still drops while\n"
+                        + "             KEEP_MAIN_INVENTORY is false, and DROP_EVERYTHING_AT_MIN_HEALTH\n"
+                        + "             takes it with everything else.\n"
                         + "\n"
-                        + "Only applies to slots that are being kept anyway. A cursed item in your\n"
-                        + "main inventory still drops while KEEP_MAIN_INVENTORY is false, and\n"
-                        + "Curse of Possession still destroys it on the way down.\n"
-                        + "Curse of Binding is unaffected either way - it stops you removing armour,\n"
-                        + "it does not destroy anything."
-        );
+                        + "NEVER      - the curses work exactly as they would without this mod. Cursed\n"
+                        + "             items are left behind when everything else is saved, and are\n"
+                        + "             destroyed on death.\n"
+                        + "\n"
+                        + "Curse of Binding is unaffected by all three - it stops you removing armour,\n"
+                        + "it does not destroy anything.\n"
+                        + "Baubles follow KEEP_BAUBLES rather than this setting.",
+                new String[]{CURSES_ALWAYS, CURSES_WITH_GEAR, CURSES_NEVER}
+        ).toUpperCase(Locale.ROOT);
 
         DROP_EVERYTHING_AT_MIN_HEALTH = config.getBoolean(
                 "DROP_EVERYTHING_AT_MIN_HEALTH", CATEGORY_ITEMS, false,
@@ -574,6 +614,10 @@ public class ModConfig {
         if (DURABILITY_LOSS_ON_KEPT_ITEMS < 0.0F) DURABILITY_LOSS_ON_KEPT_ITEMS = 0.0F;
         if (DURABILITY_LOSS_ON_KEPT_ITEMS > 1.0F) DURABILITY_LOSS_ON_KEPT_ITEMS = 1.0F;
 
+        if (!CURSES_ALWAYS.equals(KEEP_CURSED_ITEMS) && !CURSES_NEVER.equals(KEEP_CURSED_ITEMS)) {
+            KEEP_CURSED_ITEMS = CURSES_WITH_GEAR;
+        }
+
         Set<String> exempt = new HashSet<String>();
         for (String type : EXEMPT_DAMAGE_TYPES) {
             if (type != null && !type.trim().isEmpty()) {
@@ -602,6 +646,16 @@ public class ModConfig {
             // nothing here needs a restart to take effect.
             loadConfig();
         }
+    }
+
+    /** Cursed items survive even a death that costs everything else. */
+    public static boolean cursesKeptAlways() {
+        return CURSES_ALWAYS.equals(KEEP_CURSED_ITEMS);
+    }
+
+    /** Cursed items are left behind so the curse can destroy them, as if the mod were absent. */
+    public static boolean cursesNeverKept() {
+        return CURSES_NEVER.equals(KEEP_CURSED_ITEMS);
     }
 
     public static boolean isDimensionExempt(int dimensionId) {
